@@ -10,15 +10,24 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    public ChessGame() {
+    private ChessBoard gameBoard = new ChessBoard();
+    private TeamColor teamTurn = TeamColor.WHITE;
 
+    public ChessGame() {}
+
+    /**
+     * Enum identifying the 2 possible teams in a chess game
+     */
+    public enum TeamColor {
+        WHITE,
+        BLACK
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamTurn;
     }
 
     /**
@@ -27,15 +36,25 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamTurn = team;
     }
 
     /**
-     * Enum identifying the 2 possible teams in a chess game
+     * Sets this game's chessboard with a given board
+     *
+     * @param board the new board to use
      */
-    public enum TeamColor {
-        WHITE,
-        BLACK
+    public void setBoard(ChessBoard board) {
+        gameBoard = board;
+    }
+
+    /**
+     * Gets the current chessboard
+     *
+     * @return the chessboard
+     */
+    public ChessBoard getBoard() {
+        return gameBoard;
     }
 
     /**
@@ -90,21 +109,5 @@ public class ChessGame {
         throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Sets this game's chessboard with a given board
-     *
-     * @param board the new board to use
-     */
-    public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
-    }
 
-    /**
-     * Gets the current chessboard
-     *
-     * @return the chessboard
-     */
-    public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
-    }
 }
