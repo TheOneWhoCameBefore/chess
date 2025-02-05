@@ -13,8 +13,23 @@ import java.util.Objects;
 public class ChessBoard {
     private final ChessPiece[][] squares = new ChessPiece[8][8];
 
-    public ChessBoard() {
-        this.resetBoard();
+    public ChessBoard() {}
+
+    /**
+     * Constructor for deep copy
+     * @param original the original board to deep copy
+     */
+    public ChessBoard(ChessBoard original) {
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = original.getPiece(position);
+
+                if (piece != null) {
+                    addPiece(position, new ChessPiece(piece));
+                }
+            }
+        }
     }
 
     @Override

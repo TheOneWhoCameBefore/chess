@@ -1,5 +1,6 @@
 package chess;
 
+import java.security.PublicKey;
 import java.time.chrono.ChronoPeriod;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +20,15 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+    }
+
+    /**
+     * Constructor for deep copy
+     * @param original the original piece to copy
+     */
+    public ChessPiece(ChessPiece original) {
+        this.pieceColor = original.getTeamColor();
+        this.type = original.getPieceType();
     }
 
     /**

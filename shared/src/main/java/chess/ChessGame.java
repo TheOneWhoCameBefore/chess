@@ -17,6 +17,7 @@ public class ChessGame {
 
     public ChessGame() {
         this.gameBoard = new ChessBoard();
+        gameBoard.resetBoard();
         this.teamTurn = TeamColor.WHITE;
     }
 
@@ -94,6 +95,16 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
+        TeamColor teamColor = piece.getTeamColor();
+
+        for (ChessMove move : piece.pieceMoves(gameBoard, startPosition)) {
+            ChessBoard testBoard = new ChessBoard(gameBoard);
+            testBoard.makeMove(move);
+
+            if (!testBoard.isInCheck(teamColor)) {
+                validMoves.add(move);
+            }
+        }
 
         return validMoves;
     }
@@ -105,7 +116,9 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (validMoves(move.getStartPosition()) != null && validMoves(move.getStartPosition()).contains(move)) {
+        if (validMoves(move.getStartPosition()) != null &&
+            teamTurn == gameBoard.getPiece(move.getStartPosition()).getTeamColor() &&
+            validMoves(move.getStartPosition()).contains(move)) {
             gameBoard.makeMove(move);
             if (teamTurn == TeamColor.WHITE) {
                 setTeamTurn(TeamColor.BLACK);
