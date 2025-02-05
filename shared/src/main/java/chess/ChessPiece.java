@@ -62,6 +62,13 @@ public class ChessPiece {
     }
 
     /**
+     * Set the type of chess piece this piece is
+     */
+    public void setPieceType(PieceType pieceType) {
+        type = pieceType;
+    }
+
+    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
