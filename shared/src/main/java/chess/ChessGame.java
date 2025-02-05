@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -58,6 +60,25 @@ public class ChessGame {
     }
 
     /**
+     * Gets the positions of the specified team's pieces
+     *
+     * @return the chessboard
+     */
+    public Collection<ChessPosition> getTeamPositions(TeamColor team) {
+        Collection<ChessPosition> positions = new ArrayList<>();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = gameBoard.getPiece(position);
+                if (piece != null && piece.getTeamColor() == team) {
+                    positions.add(position);
+                }
+            }
+        }
+        return positions;
+    }
+
+    /**
      * Gets a valid moves for a piece at the given location
      *
      * @param startPosition the piece to get valid moves for
@@ -65,7 +86,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        return new ArrayList<>();
     }
 
     /**
@@ -85,7 +106,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return gameBoard.isInCheck(teamColor);
     }
 
     /**
@@ -95,7 +116,11 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> teamMoves = new ArrayList<>();
+        for (ChessPosition position : getTeamPositions(teamColor)) {
+            teamMoves.addAll(validMoves(position));
+        }
+        return  isInCheck(teamColor) && teamMoves.isEmpty();
     }
 
     /**
@@ -106,7 +131,11 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> teamMoves = new ArrayList<>();
+        for (ChessPosition position : getTeamPositions(teamColor)) {
+            teamMoves.addAll(validMoves(position));
+        }
+        return !isInCheck(teamColor) && teamMoves.isEmpty();
     }
 
 

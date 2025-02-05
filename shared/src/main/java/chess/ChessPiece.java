@@ -85,7 +85,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -114,7 +114,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getQueenMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -294,7 +294,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getBishopMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -390,7 +390,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getKnightMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -418,7 +418,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getRookMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -510,7 +510,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getPawnMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         int range;
