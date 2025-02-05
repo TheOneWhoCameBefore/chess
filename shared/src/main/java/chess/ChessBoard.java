@@ -90,6 +90,20 @@ public class ChessBoard {
     }
 
     /**
+     * Makes a move on a chess board
+     *
+     * @param move chess move to preform
+     */
+    public void makeMove(ChessMove move) {
+        ChessPiece piece = getPiece(move.getStartPosition());
+        if (move.getPromotionPiece() != null) {
+            piece.setPieceType(move.getPromotionPiece());
+        }
+        addPiece(move.getStartPosition(), null);
+        addPiece(move.getEndPosition(), piece);
+    }
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */

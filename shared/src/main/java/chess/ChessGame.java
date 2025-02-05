@@ -12,10 +12,13 @@ import java.util.List;
  */
 public class ChessGame {
 
-    private ChessBoard gameBoard = new ChessBoard();
-    private TeamColor teamTurn = TeamColor.WHITE;
+    private ChessBoard gameBoard;
+    private TeamColor teamTurn;
 
-    public ChessGame() {}
+    public ChessGame() {
+        this.gameBoard = new ChessBoard();
+        this.teamTurn = TeamColor.WHITE;
+    }
 
     /**
      * Enum identifying the 2 possible teams in a chess game
@@ -102,13 +105,13 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (validMoves(move.getStartPosition()).contains(move)) {
-            ChessPiece piece = gameBoard.getPiece(move.getStartPosition());
-            if (move.getPromotionPiece() != null) {
-                piece.setPieceType(move.getPromotionPiece());
+        if (validMoves(move.getStartPosition()) != null && validMoves(move.getStartPosition()).contains(move)) {
+            gameBoard.makeMove(move);
+            if (teamTurn == TeamColor.WHITE) {
+                setTeamTurn(TeamColor.BLACK);
+            } else {
+                setTeamTurn(TeamColor.WHITE);
             }
-            gameBoard.addPiece(move.getStartPosition(), null);
-            gameBoard.addPiece(move.getEndPosition(), piece);
         } else {
             throw new InvalidMoveException();
         }
