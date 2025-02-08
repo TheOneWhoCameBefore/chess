@@ -1,5 +1,6 @@
 package chess;
 
+import java.security.PublicKey;
 import java.time.chrono.ChronoPeriod;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,6 +20,15 @@ public class ChessPiece {
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+    }
+
+    /**
+     * Constructor for deep copy
+     * @param original the original piece to copy
+     */
+    public ChessPiece(ChessPiece original) {
+        this.pieceColor = original.getTeamColor();
+        this.type = original.getPieceType();
     }
 
     /**
@@ -62,6 +72,13 @@ public class ChessPiece {
     }
 
     /**
+     * Set the type of chess piece this piece is
+     */
+    public void setPieceType(PieceType pieceType) {
+        type = pieceType;
+    }
+
+    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger
@@ -85,7 +102,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -114,7 +131,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getQueenMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -294,7 +311,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getBishopMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -390,7 +407,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getKnightMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -418,7 +435,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getRookMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -510,7 +527,7 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> getPawnMoves(ChessBoard board, ChessPosition myPosition) {
-        List<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         int range;
