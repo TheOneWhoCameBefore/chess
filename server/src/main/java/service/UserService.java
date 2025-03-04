@@ -31,7 +31,20 @@ public class UserService {
             throw new ResponseException(500, "Error: Unable to connect to the database");
         }
     }
-//    public LoginResponse login(LoginRequest loginRequest) {}
+
+    public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
+        try {
+            UserData user = userDAO.retrieveUser(loginRequest.getUsername());
+            if (user == null) {
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+            AuthData auth = authDAO.createAuth(generateToken(), user.username());
+            return new LoginResponse(auth.username(), auth.authToken());
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: Unable to connect to the database");
+        }
+    }
+
     public void logout(LogoutRequest logoutRequest) {}
 
     public static String generateToken() {

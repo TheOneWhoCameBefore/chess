@@ -24,6 +24,7 @@ public class LoginRequest {
         this.password = password;
     }
 
+
     public void validate() throws JsonSyntaxException {
         if (username == null
                 || username.isEmpty()
