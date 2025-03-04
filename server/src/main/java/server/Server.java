@@ -1,13 +1,24 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import dataaccess.AuthDAO;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
+import dataaccess.MemoryUserDAO;
+import dto.RegisterRequest;
+import dto.RegisterResponse;
 import spark.*;
 import service.*;
 
 public class Server {
-    private final DatabaseService databaseService = new DatabaseService();
-//    private final GameService gameService = new GameService();
-    private final UserService userService = new UserService();
+    private static final Gson serializer = new Gson();
+    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
+    private final MemoryGameDAO gameDAO = new MemoryGameDAO();
+    private final MemoryUserDAO userDAO = new MemoryUserDAO();
+    private final DatabaseService databaseService = new DatabaseService(authDAO, gameDAO, userDAO);
+//    private final GameService gameService = new GameService(authDAO, gameDAO, userDAO);
+    private final UserService userService = new UserService(authDAO, gameDAO, userDAO);
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -43,7 +54,13 @@ public class Server {
     }
 
     private Object register(Request req, Response res) throws ResponseException {
-        userService.register();
-        return "";
+        try {
+            RegisterRequest registerRequest = serializer.fromJson(req.body(), RegisterRequest.class);
+            registerRequest.validate();
+            RegisterResponse registerResponse = userService.register(registerRequest);
+            return serializer.toJson(registerResponse);
+        } catch (JsonSyntaxException e) {
+            throw new ResponseException(400, "Error: Bad Request");
+        }
     }
 }

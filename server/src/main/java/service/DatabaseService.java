@@ -7,9 +7,15 @@ import dataaccess.MemoryUserDAO;
 import server.ResponseException;
 
 public class DatabaseService {
-    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
-    private final MemoryGameDAO gameDAO = new MemoryGameDAO();
-    private final MemoryUserDAO userDAO = new MemoryUserDAO();
+    private final MemoryAuthDAO authDAO;
+    private final MemoryGameDAO gameDAO;
+    private final MemoryUserDAO userDAO;
+
+    public DatabaseService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO, MemoryUserDAO userDAO) {
+        this.authDAO = authDAO;
+        this.gameDAO = gameDAO;
+        this.userDAO = userDAO;
+    }
 
     public void clear() throws ResponseException {
         try {
@@ -17,7 +23,7 @@ public class DatabaseService {
             gameDAO.deleteAllGames();
             userDAO.deleteAllUsers();
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database.");
+            throw new ResponseException(500, "Error: Unable to connect to the database");
         }
     }
 }

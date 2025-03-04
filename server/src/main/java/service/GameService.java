@@ -10,7 +10,7 @@ import model.GameData;
 import java.util.Collection;
 
 public class GameService {
-    public CreateGameResponse create(CreateGameResponse) {}
-    public ListGamesResponse list(ListGamesRequest listGamesRequest) {}
-    public void join(JoinGameRequest joinGameRequest) {}
+//    public CreateGameResponse create(CreateGameResponse) {}
+//    public ListGamesResponse list(ListGamesRequest listGamesRequest) {}
+//    public void join(JoinGameRequest joinGameRequest) {}
 }
