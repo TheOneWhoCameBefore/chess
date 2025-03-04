@@ -33,7 +33,7 @@ public class UserService {
     public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         try {
             UserData user = userDAO.retrieveUser(loginRequest.getUsername());
-            if (user == null) {
+            if (user == null || !loginRequest.getPassword().equals(user.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
             AuthData auth = authDAO.createAuth(generateToken(), user.username());

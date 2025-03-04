@@ -8,6 +8,12 @@ public class JoinGameRequest {
     private ChessGame.TeamColor playerColor;
     private String authToken;
 
+    public JoinGameRequest(int gameID, ChessGame.TeamColor playerColor, String authToken) {
+        this.gameID = gameID;
+        this.playerColor = playerColor;
+        this.authToken = authToken;
+    }
+
     public int getGameID() {
         return gameID;
     }
