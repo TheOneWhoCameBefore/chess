@@ -5,14 +5,12 @@ import dataaccess.DataAccessException;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
-import dto.CreateGameResponse;
-import dto.JoinGameRequest;
-import dto.ListGamesRequest;
-import dto.ListGamesResponse;
+import dto.*;
 import model.AuthData;
 import model.GameData;
 import server.ResponseException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class GameService {
@@ -23,7 +21,20 @@ public class GameService {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
-//    public CreateGameResponse create(CreateGameResponse) {}
+
+    public CreateGameResponse create(CreateGameRequest createGameRequest) throws ResponseException {
+        try {
+            AuthData auth = authDAO.retrieveAuth(createGameRequest.getAuthToken());
+            if (auth == null) {
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+            GameData game = gameDAO.createGame(null, null, createGameRequest.getGameName(), new ChessGame());
+            return new CreateGameResponse(game.gameID());
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: Unable to connect to the database");
+        }
+    }
+
     public ListGamesResponse list(ListGamesRequest listGamesRequest) throws ResponseException {
         try {
             AuthData auth = authDAO.retrieveAuth(listGamesRequest.getAuthToken());
@@ -31,7 +42,11 @@ public class GameService {
                 throw new ResponseException(401, "Error: unauthorized");
             }
             Collection<GameData> games = gameDAO.retrieveAllGames();
-            return new ListGamesResponse(games);
+            Collection<ListGameData> listGames = new ArrayList<>();
+            for (GameData game : games) {
+                listGames.add(new ListGameData(game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName()));
+            }
+            return new ListGamesResponse(listGames);
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: Unable to connect to the database");
         }
