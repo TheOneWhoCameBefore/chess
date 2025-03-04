@@ -45,7 +45,17 @@ public class UserService {
         }
     }
 
-    public void logout(LogoutRequest logoutRequest) {}
+    public void logout(LogoutRequest logoutRequest) throws ResponseException {
+        try {
+            AuthData auth = authDAO.retrieveAuth(logoutRequest.getAuthToken());
+            if (auth == null) {
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+            authDAO.deleteAuth(logoutRequest.getAuthToken());
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: Unable to connect to the database");
+        }
+    }
 
     public static String generateToken() {
         return UUID.randomUUID().toString();

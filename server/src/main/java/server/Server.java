@@ -6,10 +6,7 @@ import dataaccess.AuthDAO;
 import dataaccess.MemoryAuthDAO;
 import dataaccess.MemoryGameDAO;
 import dataaccess.MemoryUserDAO;
-import dto.LoginRequest;
-import dto.LoginResponse;
-import dto.RegisterRequest;
-import dto.RegisterResponse;
+import dto.*;
 import spark.*;
 import service.*;
 
@@ -33,6 +30,7 @@ public class Server {
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -75,6 +73,18 @@ public class Server {
             loginRequest.validate();
             LoginResponse registerResponse = userService.login(loginRequest);
             return serializer.toJson(registerResponse);
+        } catch (JsonSyntaxException e) {
+            throw new ResponseException(400, "Error: Bad Request");
+        }
+    }
+
+    private Object logout(Request req, Response res) throws ResponseException {
+        try {
+            String authToken = req.headers("authorization");
+            LogoutRequest logoutRequest = new LogoutRequest(authToken);
+            logoutRequest.validate();
+            userService.logout(logoutRequest);
+            return "";
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }
