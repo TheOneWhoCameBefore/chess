@@ -59,6 +59,9 @@ public class GameService {
                 throw new ResponseException(401, "Error: unauthorized");
             }
             GameData game = gameDAO.retrieveGame(joinGameRequest.getGameID());
+            if (game == null) {
+                throw new ResponseException(400, "Error: bad request");
+            }
             if ((joinGameRequest.getPlayerColor() == WHITE && game.whiteUsername() != null)
                     || (joinGameRequest.getPlayerColor() == BLACK && game.blackUsername() != null)) {
                 throw new ResponseException(403, "Error: already taken");
