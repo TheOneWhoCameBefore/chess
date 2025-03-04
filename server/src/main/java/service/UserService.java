@@ -9,12 +9,10 @@ import server.ResponseException;
 
 public class UserService {
     private final MemoryAuthDAO authDAO;
-    private final MemoryGameDAO gameDAO;
     private final MemoryUserDAO userDAO;
 
-    public UserService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO, MemoryUserDAO userDAO) {
+    public UserService(MemoryAuthDAO authDAO, MemoryUserDAO userDAO) {
         this.authDAO = authDAO;
-        this.gameDAO = gameDAO;
         this.userDAO = userDAO;
     }
 
