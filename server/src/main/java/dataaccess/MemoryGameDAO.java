@@ -12,7 +12,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public GameData createGame(String whiteUsername, String blackUsername, String gameName, ChessGame gameObject) throws DataAccessException {
-        GameData game = new GameData(nextID++, whiteUsername, blackUsername, gameName, gameObject);
+        GameData game = new GameData(nextID, whiteUsername, blackUsername, gameName, gameObject);
         games.put(nextID++, game);
         return game;
     }
@@ -27,10 +27,11 @@ public class MemoryGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame gameObject) throws DataAccessException {
-        GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, gameObject);
-        games.put(gameID, game);
-        return game;
+    public GameData updateGame(int gameID, String whiteUsername, String blackUsername) throws DataAccessException {
+        GameData oldGame = retrieveGame(gameID);
+        GameData newGame = new GameData(gameID, whiteUsername, blackUsername, oldGame.gameName(), oldGame.game());
+        games.put(gameID, newGame);
+        return newGame;
     }
 
     @Override

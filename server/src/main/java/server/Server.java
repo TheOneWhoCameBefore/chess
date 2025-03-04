@@ -32,6 +32,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
@@ -111,6 +112,19 @@ public class Server {
             createGameRequest.validate();
             CreateGameResponse createGameResponse = gameService.create(createGameRequest);
             return serializer.toJson(createGameResponse);
+        } catch (JsonSyntaxException e) {
+            throw new ResponseException(400, "Error: Bad Request");
+        }
+    }
+
+    private Object joinGame(Request req, Response res) throws ResponseException {
+        try {
+            String authToken = req.headers("authorization");
+            JoinGameRequest joinGameRequest = serializer.fromJson(req.body(), JoinGameRequest.class);
+            joinGameRequest.setAuthToken(authToken);
+            joinGameRequest.validate();
+            gameService.join(joinGameRequest);
+            return "";
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }

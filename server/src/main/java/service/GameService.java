@@ -1,10 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import dto.*;
 import model.AuthData;
 import model.GameData;
@@ -12,6 +9,9 @@ import server.ResponseException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService {
     private final MemoryAuthDAO authDAO;
@@ -51,5 +51,21 @@ public class GameService {
             throw new ResponseException(500, "Error: Unable to connect to the database");
         }
     }
-//    public void join(JoinGameRequest joinGameRequest) {}
+
+    public void join(JoinGameRequest joinGameRequest) throws ResponseException {
+        try {
+            AuthData auth = authDAO.retrieveAuth(joinGameRequest.getAuthToken());
+            if (auth == null) {
+                throw new ResponseException(401, "Error: unauthorized");
+            }
+            GameData game = gameDAO.retrieveGame(joinGameRequest.getGameID());
+            if ((joinGameRequest.getPlayerColor() == WHITE && game.whiteUsername() != null)
+                    || (joinGameRequest.getPlayerColor() == BLACK && game.blackUsername() != null)) {
+                throw new ResponseException(403, "Error: already taken");
+            }
+            gameDAO.updateGame(joinGameRequest.getGameID(), (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(), (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: Unable to connect to the database");
+        }
+    }
 }
