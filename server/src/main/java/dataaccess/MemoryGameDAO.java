@@ -6,12 +6,13 @@ import model.GameData;
 import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO {
+    private int nextID = 1;
     final private HashMap<Integer, GameData> games = new HashMap<>();
 
     @Override
-    public GameData createGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame gameObject) throws DataAccessException {
-        GameData game = new GameData(gameID, whiteUsername, blackUsername, gameName, gameObject);
-        games.put(gameID, game);
+    public GameData createGame(String whiteUsername, String blackUsername, String gameName, ChessGame gameObject) throws DataAccessException {
+        GameData game = new GameData(nextID++, whiteUsername, blackUsername, gameName, gameObject);
+        games.put(nextID++, game);
         return game;
     }
 

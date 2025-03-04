@@ -1,12 +1,16 @@
 package service;
 
 import chess.ChessGame;
+import dto.CreateGameResponse;
+import dto.JoinGameRequest;
+import dto.ListGamesRequest;
+import dto.ListGamesResponse;
 import model.GameData;
 
 import java.util.Collection;
 
 public class GameService {
-//    public GameData create(String name) {}
-//    public Collection<GameData> list(int gameID) {}
-//    public GameData join(int gameID, String username, ChessGame.TeamColor color) {}
+    public CreateGameResponse create(CreateGameResponse) {}
+    public ListGamesResponse list(ListGamesRequest listGamesRequest) {}
+    public void join(JoinGameRequest joinGameRequest) {}
 }

@@ -1,9 +1,13 @@
 package service;
 
+import dto.LoginRequest;
+import dto.LoginResponse;
+import dto.RegisterRequest;
+import dto.RegisterResponse;
 import model.AuthData;
 import model.UserData;
 
 public class UserService {
-//    public UserData register(String username, String password, String email) {}
-//    public AuthData login(String username) {}
+    public RegisterResponse register(RegisterRequest registerRequest) {}
+    public LoginResponse login(LoginRequest loginRequest) {}
 }

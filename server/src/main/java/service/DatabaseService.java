@@ -11,7 +11,6 @@ public class DatabaseService {
     private final MemoryGameDAO gameDAO = new MemoryGameDAO();
     private final MemoryUserDAO userDAO = new MemoryUserDAO();
 
-
     public void clear() throws ResponseException {
         try {
             authDAO.deleteAllAuth();
