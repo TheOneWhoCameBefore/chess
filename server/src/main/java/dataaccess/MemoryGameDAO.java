@@ -31,4 +31,9 @@ public class MemoryGameDAO implements GameDAO {
     public void deleteGame(int gameID) throws DataAccessException {
         games.remove(gameID);
     }
+
+    @Override
+    public void deleteAllGames() throws DataAccessException {
+        games.clear();
+    }
 }
