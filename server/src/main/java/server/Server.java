@@ -4,15 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.*;
 import dto.*;
-import model.GameData;
 import spark.*;
 import service.*;
 
-import java.lang.annotation.Repeatable;
-import java.util.Collection;
-
 public class Server {
-    private static final Gson serializer = new Gson();
+    private static final Gson SERIALIZER = new Gson();
     private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
     private final MemoryGameDAO gameDAO = new MemoryGameDAO();
     private final MemoryUserDAO userDAO = new MemoryUserDAO();
@@ -48,7 +44,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         res.body(ex.toJson());
     }
 
@@ -60,10 +56,10 @@ public class Server {
 
     private Object register(Request req, Response res) throws ResponseException {
         try {
-            RegisterRequest registerRequest = serializer.fromJson(req.body(), RegisterRequest.class);
+            RegisterRequest registerRequest = SERIALIZER.fromJson(req.body(), RegisterRequest.class);
             registerRequest.validate();
             RegisterResponse registerResponse = userService.register(registerRequest);
-            return serializer.toJson(registerResponse);
+            return SERIALIZER.toJson(registerResponse);
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }
@@ -71,10 +67,10 @@ public class Server {
 
     private Object login(Request req, Response res) throws ResponseException {
         try {
-            LoginRequest loginRequest = serializer.fromJson(req.body(), LoginRequest.class);
+            LoginRequest loginRequest = SERIALIZER.fromJson(req.body(), LoginRequest.class);
             loginRequest.validate();
             LoginResponse registerResponse = userService.login(loginRequest);
-            return serializer.toJson(registerResponse);
+            return SERIALIZER.toJson(registerResponse);
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }
@@ -98,7 +94,7 @@ public class Server {
             ListGamesRequest listGamesRequest = new ListGamesRequest(authToken);
             listGamesRequest.validate();
             ListGamesResponse listGamesResponse = gameService.list(listGamesRequest);
-            return serializer.toJson(listGamesResponse);
+            return SERIALIZER.toJson(listGamesResponse);
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }
@@ -107,11 +103,11 @@ public class Server {
     private Object createGame(Request req, Response res) throws ResponseException {
         try {
             String authToken = req.headers("authorization");
-            CreateGameRequest createGameRequest = serializer.fromJson(req.body(), CreateGameRequest.class);
+            CreateGameRequest createGameRequest = SERIALIZER.fromJson(req.body(), CreateGameRequest.class);
             createGameRequest.setAuthToken(authToken);
             createGameRequest.validate();
             CreateGameResponse createGameResponse = gameService.create(createGameRequest);
-            return serializer.toJson(createGameResponse);
+            return SERIALIZER.toJson(createGameResponse);
         } catch (JsonSyntaxException e) {
             throw new ResponseException(400, "Error: Bad Request");
         }
@@ -120,7 +116,7 @@ public class Server {
     private Object joinGame(Request req, Response res) throws ResponseException {
         try {
             String authToken = req.headers("authorization");
-            JoinGameRequest joinGameRequest = serializer.fromJson(req.body(), JoinGameRequest.class);
+            JoinGameRequest joinGameRequest = SERIALIZER.fromJson(req.body(), JoinGameRequest.class);
             joinGameRequest.setAuthToken(authToken);
             joinGameRequest.validate();
             gameService.join(joinGameRequest);

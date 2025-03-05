@@ -48,7 +48,7 @@ public class ServiceTests {
             userService.register((registerRequest));
             userService.register(registerRequest);
         } catch (ResponseException e) {
-            assertEquals(403, e.StatusCode());
+            assertEquals(403, e.statusCode());
         }
     }
 
@@ -68,7 +68,7 @@ public class ServiceTests {
             LoginRequest loginRequest = new LoginRequest("user1", "password1");
             userService.login((loginRequest));
         } catch (ResponseException e) {
-            assertEquals(401, e.StatusCode());
+            assertEquals(401, e.statusCode());
         }
     }
 
@@ -88,7 +88,7 @@ public class ServiceTests {
             LogoutRequest logoutRequest = new LogoutRequest("12345");
             userService.logout(logoutRequest);
         } catch (ResponseException e) {
-            assertEquals(401, e.StatusCode());
+            assertEquals(401, e.statusCode());
         }
     }
 
@@ -108,7 +108,7 @@ public class ServiceTests {
             ListGamesRequest listGamesRequest = new ListGamesRequest("12345");
             gameService.list(listGamesRequest);
         } catch (ResponseException e) {
-            assertEquals(401, e.StatusCode());
+            assertEquals(401, e.statusCode());
         }
     }
 
@@ -127,7 +127,7 @@ public class ServiceTests {
             CreateGameRequest createGameRequest = new CreateGameRequest("game1", "1234");
             gameService.create(createGameRequest);
         } catch (ResponseException e) {
-            assertEquals(401, e.StatusCode());
+            assertEquals(401, e.statusCode());
         }
     }
 
@@ -137,7 +137,9 @@ public class ServiceTests {
         RegisterResponse registerResponse = userService.register(registerRequest);
         CreateGameRequest createGameRequest = new CreateGameRequest("game1", registerResponse.authToken());
         CreateGameResponse createGameResponse = gameService.create(createGameRequest);
-        JoinGameRequest joinGameRequest = new JoinGameRequest(createGameResponse.gameID(), ChessGame.TeamColor.WHITE, registerResponse.authToken());
+        JoinGameRequest joinGameRequest = new JoinGameRequest(createGameResponse.gameID(),
+                ChessGame.TeamColor.WHITE,
+                registerResponse.authToken());
         gameService.join(joinGameRequest);
         GameData game = gameDAO.retrieveGame(createGameResponse.gameID());
         assertEquals("user1", game.whiteUsername());
@@ -150,11 +152,13 @@ public class ServiceTests {
             RegisterResponse registerResponse = userService.register(registerRequest);
             CreateGameRequest createGameRequest = new CreateGameRequest("game1", registerResponse.authToken());
             CreateGameResponse createGameResponse = gameService.create(createGameRequest);
-            JoinGameRequest joinGameRequest = new JoinGameRequest(createGameResponse.gameID(), ChessGame.TeamColor.WHITE, registerResponse.authToken());
+            JoinGameRequest joinGameRequest = new JoinGameRequest(createGameResponse.gameID(),
+                    ChessGame.TeamColor.WHITE,
+                    registerResponse.authToken());
             gameService.join(joinGameRequest);
             gameService.join(joinGameRequest);
         } catch (ResponseException e) {
-            assertEquals(403, e.StatusCode());
+            assertEquals(403, e.statusCode());
         }
     }
 

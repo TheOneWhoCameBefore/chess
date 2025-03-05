@@ -66,7 +66,9 @@ public class GameService {
                     || (joinGameRequest.getPlayerColor() == BLACK && game.blackUsername() != null)) {
                 throw new ResponseException(403, "Error: already taken");
             }
-            gameDAO.updateGame(joinGameRequest.getGameID(), (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(), (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
+            gameDAO.updateGame(joinGameRequest.getGameID(),
+                    (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(),
+                    (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: Unable to connect to the database");
         }

@@ -8,10 +8,10 @@ import model.UserData;
 import server.ResponseException;
 
 public class UserService {
-    private final MemoryAuthDAO authDAO;
-    private final MemoryUserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final UserDAO userDAO;
 
-    public UserService(MemoryAuthDAO authDAO, MemoryUserDAO userDAO) {
+    public UserService(AuthDAO authDAO, UserDAO userDAO) {
         this.authDAO = authDAO;
         this.userDAO = userDAO;
     }
