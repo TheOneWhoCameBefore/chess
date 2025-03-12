@@ -68,7 +68,9 @@ public class GameService {
             }
             gameDAO.updateGame(joinGameRequest.getGameID(),
                     (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(),
-                    (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
+                    (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername(),
+                    game.gameName(),
+                    game.game());
         } catch (DataAccessException e) {
             throw new ResponseException(500, e.getMessage());
         }
