@@ -48,7 +48,7 @@ public class MySqlAuthDAO implements AuthDAO {
     public final String createStatement =
             """
             CREATE TABLE IF NOT EXISTS auths (
-              `authToken` int NOT NULL,
+              `authToken` VARCHAR(36) NOT NULL,
               `username` varchar(256) NOT NULL,
               PRIMARY KEY (`authToken`),
               INDEX(username)
