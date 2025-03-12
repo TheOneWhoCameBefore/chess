@@ -1,7 +1,7 @@
 package dataaccess;
 
 public class MemoryDataAccess {
-    public final MemoryAuthDAO authDAO = new MemoryAuthDAO();
-    public final MemoryGameDAO gameDAO = new MemoryGameDAO();
-    public final MemoryUserDAO userDAO = new MemoryUserDAO();
+    public final AuthDAO authDAO = new MemoryAuthDAO();
+    public final GameDAO gameDAO = new MemoryGameDAO();
+    public final UserDAO userDAO = new MemoryUserDAO();
 }
