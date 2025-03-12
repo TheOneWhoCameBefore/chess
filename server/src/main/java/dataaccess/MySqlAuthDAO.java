@@ -2,23 +2,48 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
 public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public AuthData createAuth(String authToken, String username) throws DataAccessException {
-        return new AuthData(authToken, "none");
+        String statement = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
+        MySqlDataAccess.executeUpdate(statement, authToken, username);
+        return new AuthData(authToken, username);
     }
 
     @Override
     public AuthData retrieveAuth(String authToken) throws DataAccessException {
-        return new AuthData(authToken, "none");
+        try (Connection conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT authToken, username FROM auths WHERE authToken=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String username = rs.getString("username");
+                        return new AuthData(authToken, username);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return null;
     }
 
     @Override
-    public void deleteAuth(String authToken) throws DataAccessException {}
+    public void deleteAuth(String authToken) throws DataAccessException {
+        var statement = "DELETE FROM auths WHERE authToken=?";
+        MySqlDataAccess.executeUpdate(statement, authToken);
+    }
 
     @Override
-    public void deleteAllAuth() throws DataAccessException {}
+    public void deleteAllAuth() throws DataAccessException {
+        var statement = "TRUNCATE auths";
+        MySqlDataAccess.executeUpdate(statement);
+    }
 
     public final String createStatement =
             """
