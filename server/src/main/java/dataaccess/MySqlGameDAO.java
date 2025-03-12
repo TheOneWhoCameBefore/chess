@@ -30,4 +30,18 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public void deleteAllGames() throws DataAccessException {}
+
+    public final String createStatement =
+            """
+            CREATE TABLE IF NOT EXISTS games (
+              `gameID` int NOT NULL AUTO_INCREMENT,
+              `whiteUsername` varchar(256),
+              `blackUsername` varchar(256),
+              `gameName` varchar(256) NOT NULL,
+              `game` TEXT NOT NULL,
+              PRIMARY KEY (`gameID`),
+              INDEX(whiteUsername),
+              INDEX(blackUsername)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """;
 }
