@@ -23,7 +23,7 @@ public class DatabaseService {
             gameDAO.deleteAllGames();
             userDAO.deleteAllUsers();
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 }
