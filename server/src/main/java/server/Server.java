@@ -9,12 +9,10 @@ import service.*;
 
 public class Server {
     private static final Gson SERIALIZER = new Gson();
-    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
-    private final MemoryGameDAO gameDAO = new MemoryGameDAO();
-    private final MemoryUserDAO userDAO = new MemoryUserDAO();
-    private final DatabaseService databaseService = new DatabaseService(authDAO, gameDAO, userDAO);
-    private final GameService gameService = new GameService(authDAO, gameDAO);
-    private final UserService userService = new UserService(authDAO, userDAO);
+    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
+    private final DatabaseService databaseService = new DatabaseService(dataAccess.authDAO, dataAccess.gameDAO, dataAccess.userDAO);
+    private final GameService gameService = new GameService(dataAccess.authDAO, dataAccess.gameDAO);
+    private final UserService userService = new UserService(dataAccess.authDAO, dataAccess.userDAO);
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);

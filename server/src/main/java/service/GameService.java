@@ -14,8 +14,8 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService {
-    private final MemoryAuthDAO authDAO;
-    private final MemoryGameDAO gameDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
     public GameService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
         this.authDAO = authDAO;
