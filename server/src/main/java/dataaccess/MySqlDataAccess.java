@@ -2,7 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 
-import java.sql.SQLException;
+import java.sql.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -17,9 +17,9 @@ public class MySqlDataAccess {
     }
 
     public static int executeUpdate(String statement, Object... params) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (int i = 0; i < params.length; i++) {
                     var param = params[i];
                     switch (param) {
                         case String p -> ps.setString(i + 1, p);
@@ -32,7 +32,7 @@ public class MySqlDataAccess {
                 }
                 ps.executeUpdate();
 
-                var rs = ps.getGeneratedKeys();
+                ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     return rs.getInt(1);
                 }
@@ -46,9 +46,9 @@ public class MySqlDataAccess {
 
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : new String[] {authDAO.createStatement, gameDAO.createStatement, userDAO.createStatement}) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
+        try (Connection conn = DatabaseManager.getConnection()) {
+            for (String statement : new String[] {authDAO.createStatement, gameDAO.createStatement, userDAO.createStatement}) {
+                try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }
             }
