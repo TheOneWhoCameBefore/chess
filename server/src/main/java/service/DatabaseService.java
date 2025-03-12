@@ -1,17 +1,17 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.AuthDAO;
+import dataaccess.GameDAO;
+import dataaccess.UserDAO;
 import server.ResponseException;
 
 public class DatabaseService {
-    private final MemoryAuthDAO authDAO;
-    private final MemoryGameDAO gameDAO;
-    private final MemoryUserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final UserDAO userDAO;
 
-    public DatabaseService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO, MemoryUserDAO userDAO) {
+    public DatabaseService(AuthDAO authDAO, GameDAO gameDAO, UserDAO userDAO) {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
         this.userDAO = userDAO;
