@@ -19,5 +19,15 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAllAuth() throws DataAccessException {}
+
+    public final String createStatement =
+            """
+            CREATE TABLE IF NOT EXISTS auths (
+              `authToken` int NOT NULL,
+              `username` varchar(256) NOT NULL,
+              PRIMARY KEY (`authToken`),
+              INDEX(username)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """;
 }
 
