@@ -31,7 +31,7 @@ public class GameService {
             GameData game = gameDAO.createGame(null, null, createGameRequest.getGameName(), new ChessGame());
             return new CreateGameResponse(game.gameID());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class GameService {
             }
             return new ListGamesResponse(listGames);
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -70,7 +70,7 @@ public class GameService {
                     (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(),
                     (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 }

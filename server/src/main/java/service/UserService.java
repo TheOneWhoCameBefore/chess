@@ -26,7 +26,7 @@ public class UserService {
             AuthData auth = authDAO.createAuth(generateToken(), user.username());
             return new RegisterResponse(auth.username(), auth.authToken());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class UserService {
             AuthData auth = authDAO.createAuth(generateToken(), user.username());
             return new LoginResponse(auth.username(), auth.authToken());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -51,7 +51,7 @@ public class UserService {
             }
             authDAO.deleteAuth(logoutRequest.getAuthToken());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
