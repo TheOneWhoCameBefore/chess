@@ -1,7 +1,6 @@
 package dataaccess;
 
 import chess.ChessGame;
-import server.ResponseException;
 
 import java.sql.SQLException;
 
@@ -13,7 +12,11 @@ public class MySqlDataAccess {
     public final MySqlGameDAO gameDAO = new MySqlGameDAO();
     public final MySqlUserDAO userDAO = new MySqlUserDAO();
 
-    private int executeUpdate(String statement, Object... params) throws ResponseException {
+    public MySqlDataAccess() throws DataAccessException {
+        configureDatabase();
+    }
+
+    public static int executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
@@ -37,26 +40,20 @@ public class MySqlDataAccess {
                 return 0;
             }
         } catch (SQLException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        } catch (DataAccessException e) {
-            throw new ResponseException(500, e.getMessage());
+            throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
 
-    private void configureDatabase() throws ResponseException {
-        try {
-            DatabaseManager.createDatabase();
-            try (var conn = DatabaseManager.getConnection()) {
-                for (var statement : new String[] {authDAO.createStatement, gameDAO.createStatement, userDAO.createStatement}) {
-                    try (var preparedStatement = conn.prepareStatement(statement)) {
-                        preparedStatement.executeUpdate();
-                    }
+    private void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()) {
+            for (var statement : new String[] {authDAO.createStatement, gameDAO.createStatement, userDAO.createStatement}) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
                 }
-            } catch (SQLException ex) {
-                throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
             }
-        } catch (DataAccessException e) {
-            throw new ResponseException(500, e.getMessage());
+        } catch (SQLException ex) {
+            throw new DataAccessException(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }
