@@ -14,10 +14,10 @@ import static chess.ChessGame.TeamColor.BLACK;
 import static chess.ChessGame.TeamColor.WHITE;
 
 public class GameService {
-    private final MemoryAuthDAO authDAO;
-    private final MemoryGameDAO gameDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
 
-    public GameService(MemoryAuthDAO authDAO, MemoryGameDAO gameDAO) {
+    public GameService(AuthDAO authDAO, GameDAO gameDAO) {
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;
     }
@@ -31,7 +31,7 @@ public class GameService {
             GameData game = gameDAO.createGame(null, null, createGameRequest.getGameName(), new ChessGame());
             return new CreateGameResponse(game.gameID());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ public class GameService {
             }
             return new ListGamesResponse(listGames);
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 
@@ -68,9 +68,11 @@ public class GameService {
             }
             gameDAO.updateGame(joinGameRequest.getGameID(),
                     (joinGameRequest.getPlayerColor() == WHITE) ? auth.username() : game.whiteUsername(),
-                    (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername());
+                    (joinGameRequest.getPlayerColor() == BLACK) ? auth.username() : game.blackUsername(),
+                    game.gameName(),
+                    game.game());
         } catch (DataAccessException e) {
-            throw new ResponseException(500, "Error: Unable to connect to the database");
+            throw new ResponseException(500, e.getMessage());
         }
     }
 }

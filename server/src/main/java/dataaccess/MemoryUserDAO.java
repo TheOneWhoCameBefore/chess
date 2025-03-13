@@ -19,18 +19,6 @@ public class MemoryUserDAO implements UserDAO {
         return users.get(username);
     }
 
-//    @Override
-//    public UserData updateUser(String username, String password, String email) throws DataAccessException {
-//        UserData user = new UserData(username, password, email);
-//        users.put(username, user);
-//        return user;
-//    }
-
-//    @Override
-//    public void deleteUser(String username) throws DataAccessException {
-//        users.remove(username);
-//    }
-
     @Override
     public void deleteAllUsers() throws DataAccessException {
         users.clear();

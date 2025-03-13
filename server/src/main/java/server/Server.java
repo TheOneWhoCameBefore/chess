@@ -9,17 +9,24 @@ import service.*;
 
 public class Server {
     private static final Gson SERIALIZER = new Gson();
-    private final MemoryAuthDAO authDAO = new MemoryAuthDAO();
-    private final MemoryGameDAO gameDAO = new MemoryGameDAO();
-    private final MemoryUserDAO userDAO = new MemoryUserDAO();
-    private final DatabaseService databaseService = new DatabaseService(authDAO, gameDAO, userDAO);
-    private final GameService gameService = new GameService(authDAO, gameDAO);
-    private final UserService userService = new UserService(authDAO, userDAO);
+    private DatabaseService databaseService;
+    private GameService gameService;
+    private UserService userService;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        try {
+            MySqlDataAccess dataAccess = new MySqlDataAccess();
+            databaseService = new DatabaseService(dataAccess.authDAO, dataAccess.gameDAO, dataAccess.userDAO);
+            gameService = new GameService(dataAccess.authDAO, dataAccess.gameDAO);
+            userService = new UserService(dataAccess.authDAO, dataAccess.userDAO);
+        } catch (Throwable e) {
+            System.out.printf("Unable to start server: %s%n", e.getMessage());
+            return -1;
+        }
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
