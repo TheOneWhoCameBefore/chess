@@ -64,7 +64,12 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     @Override
-    public GameData updateGame(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame gameObject) throws DataAccessException {
+    public GameData updateGame(
+            int gameID,
+            String whiteUsername,
+            String blackUsername,
+            String gameName,
+            ChessGame gameObject) throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             String statement = "UPDATE games SET whiteUsername = ?, blackUsername = ?, gameName = ?, game = ? WHERE gameID = ?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {

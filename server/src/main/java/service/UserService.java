@@ -23,7 +23,11 @@ public class UserService {
             if (user != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
-            user = userDAO.createUser(registerRequest.getUsername(), BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt()), registerRequest.getEmail());
+            user = userDAO.createUser(
+                    registerRequest.getUsername(),
+                    BCrypt.hashpw(registerRequest.getPassword(),
+                    BCrypt.gensalt()),
+                    registerRequest.getEmail());
             AuthData auth = authDAO.createAuth(generateToken(), user.username());
             return new RegisterResponse(auth.username(), auth.authToken());
         } catch (DataAccessException e) {
