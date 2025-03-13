@@ -4,6 +4,7 @@ import model.AuthData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class MySqlAuthDAO implements AuthDAO {
 
@@ -20,7 +21,7 @@ public class MySqlAuthDAO implements AuthDAO {
             String statement = "SELECT authToken, username FROM auths WHERE authToken=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
-                try (var rs = ps.executeQuery()) {
+                try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         String username = rs.getString("username");
                         return new AuthData(authToken, username);
@@ -35,13 +36,13 @@ public class MySqlAuthDAO implements AuthDAO {
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        var statement = "DELETE FROM auths WHERE authToken=?";
+        String statement = "DELETE FROM auths WHERE authToken=?";
         MySqlDataAccess.executeUpdate(statement, authToken);
     }
 
     @Override
     public void deleteAllAuth() throws DataAccessException {
-        var statement = "TRUNCATE auths";
+        String statement = "TRUNCATE auths";
         MySqlDataAccess.executeUpdate(statement);
     }
 

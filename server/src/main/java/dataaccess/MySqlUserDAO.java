@@ -4,6 +4,7 @@ import model.UserData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class MySqlUserDAO implements UserDAO {
 
@@ -20,7 +21,7 @@ public class MySqlUserDAO implements UserDAO {
             String statement = "SELECT username, password, email FROM users WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
-                try (var rs = ps.executeQuery()) {
+                try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         String password = rs.getString("password");
                         String email = rs.getString("email");
@@ -36,7 +37,7 @@ public class MySqlUserDAO implements UserDAO {
 
     @Override
     public void deleteAllUsers() throws DataAccessException {
-        var statement = "TRUNCATE users";
+        String statement = "TRUNCATE users";
         MySqlDataAccess.executeUpdate(statement);
     }
 

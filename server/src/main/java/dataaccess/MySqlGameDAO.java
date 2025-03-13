@@ -6,6 +6,7 @@ import model.GameData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ public class MySqlGameDAO implements GameDAO {
             String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
-                try (var rs = ps.executeQuery()) {
+                try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         String whiteUsername = rs.getString("whiteUsername");
                         String blackUsername = rs.getString("blackUsername");
@@ -41,11 +42,11 @@ public class MySqlGameDAO implements GameDAO {
     }
 
     public Collection<GameData> retrieveAllGames() throws DataAccessException {
-        var result = new ArrayList<GameData>();
-        try (var conn = DatabaseManager.getConnection()) {
+        Collection<GameData> result = new ArrayList<GameData>();
+        try (Connection conn = DatabaseManager.getConnection()) {
             String statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                try (var rs = ps.executeQuery()) {
+                try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         int gameID = rs.getInt("gameID");
                         String whiteUsername = rs.getString("whiteUsername");
@@ -86,7 +87,7 @@ public class MySqlGameDAO implements GameDAO {
 
     @Override
     public void deleteAllGames() throws DataAccessException {
-        var statement = "TRUNCATE games";
+        String statement = "TRUNCATE games";
         MySqlDataAccess.executeUpdate(statement);
     }
 
