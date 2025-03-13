@@ -105,6 +105,8 @@ public class ChessBoard {
             if (move.getEndPosition().equals(kingPosition)) {
                 return true;
             }
+        }
+        return false;
     }
 
     /**
