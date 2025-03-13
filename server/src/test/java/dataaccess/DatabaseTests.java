@@ -67,17 +67,17 @@ public class DatabaseTests {
 
     @Test
     public void testRetrieveAuthSuccess() throws DataAccessException {
-        String authToken = "testAuthToken";
-        String username = "testUsername";
+        String authToken = "testRetrieveAuthToken";
+        String username = "testRetrieveUsername";
         authDAO.createAuth(authToken, username);
 
         AuthData auth = authDAO.retrieveAuth(authToken);
-        assertEquals(authToken, auth.authToken());
+        assertEquals(username, auth.username());
     }
 
     @Test
     public void testRetrieveAuthFail() throws DataAccessException {
-        assertNull(authDAO.retrieveAuth("testAuthToken"));
+        assertNull(authDAO.retrieveAuth("testRetrieveAuthToken"));
     }
 
     @Test

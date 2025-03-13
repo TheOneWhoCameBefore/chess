@@ -92,16 +92,19 @@ public class ChessBoard {
             for (int col = 1; col <= 8; col++) {
                 ChessPosition position = new ChessPosition(row, col);
                 ChessPiece piece = getPiece(position);
-                if (piece != null && piece.getTeamColor() != teamColor) {
-                    for (ChessMove move : piece.pieceMoves(this, position)) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
-                    }
+                if (piece != null && piece.getTeamColor() != teamColor && canMoveToKing(piece, position, kingPosition)) {
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    private boolean canMoveToKing(ChessPiece piece, ChessPosition position, ChessPosition kingPosition) {
+        for (ChessMove move : piece.pieceMoves(this, position)) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
     }
 
     /**

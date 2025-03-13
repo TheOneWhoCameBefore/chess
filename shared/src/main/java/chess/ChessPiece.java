@@ -1,7 +1,5 @@
 package chess;
 
-import java.security.PublicKey;
-import java.time.chrono.ChronoPeriod;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -123,28 +121,19 @@ public class ChessPiece {
                 ChessPosition newPosition = new ChessPosition(newRow, newCol);
                 ChessPiece piece = board.getPiece(newPosition);
 
-                if (piece == null) {
-                    if (canMoveToEmpty) {
+                if (piece == null && canMoveToEmpty) {
                         if (pawnPromotion) {
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                            moves.addAll(pawnPromotionMoves(myPosition, newPosition));
                         } else {
                             moves.add(new ChessMove(myPosition, newPosition));
                         }
-                    }
-                } else { // Encountering any piece
-                    if (piece.getTeamColor() != this.getTeamColor() && canCapture) {
+                } else if (piece != null && piece.getTeamColor() != this.getTeamColor() && canCapture) {
                         if (pawnPromotion) {
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                            moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                            moves.addAll(pawnPromotionMoves(myPosition, newPosition));
                         } else {
                             moves.add(new ChessMove(myPosition, newPosition));
                         }
-                    }
+                } if (piece != null) {
                     break;
                 }
             } else {
@@ -255,4 +244,13 @@ public class ChessPiece {
 
         return moves;
     }
-}
+
+    private Collection<ChessMove> pawnPromotionMoves(ChessPosition myPosition, ChessPosition newPosition) {
+        return List.of(new ChessMove[]{
+                new ChessMove(myPosition, newPosition, PieceType.QUEEN),
+                new ChessMove(myPosition, newPosition, PieceType.BISHOP),
+                new ChessMove(myPosition, newPosition, PieceType.ROOK),
+                new ChessMove(myPosition, newPosition, PieceType.KNIGHT)
+        });
+    };
+ }
