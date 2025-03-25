@@ -5,6 +5,7 @@ import dto.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -14,10 +15,36 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public void clear() throws ResponseException {
+        makeRequest("DELETE", "/db", null, null);
+    }
+
     public void register(String username, String password, String email) throws ResponseException {
         RegisterRequest registerRequest = new RegisterRequest(email, password, username);
-        RegisterResponse response = makeRequest("POST", "/user", registerRequest, RegisterResponse.class);
-        authToken = response.authToken();
+        RegisterResponse registerResponse = makeRequest("POST", "/user", registerRequest, RegisterResponse.class);
+        authToken = registerResponse.authToken();
+    }
+
+    public void login(String username, String password) throws ResponseException {
+        LoginRequest loginRequest = new LoginRequest(username, password);
+        LoginResponse loginResponse = makeRequest("POST", "/session", loginRequest, LoginResponse.class);
+        authToken = loginResponse.authToken();
+    }
+
+    public void logout() throws ResponseException {
+        makeRequest("DELETE", "/session", null, null);
+        authToken = null;
+    }
+
+    public Collection<ListGameData> listGames() throws ResponseException {
+        ListGamesResponse listGamesResponse = makeRequest("GET", "/game", null, ListGamesResponse.class);
+        return listGamesResponse.games();
+    }
+
+    public int createGame(String gameName) throws ResponseException {
+        CreateGameRequest createGameRequest = new CreateGameRequest(gameName, authToken);
+        CreateGameResponse createGameResponse = makeRequest("POST", "/game", createGameRequest, CreateGameResponse.class);
+        return createGameResponse.gameID();
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
