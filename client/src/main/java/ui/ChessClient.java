@@ -26,7 +26,7 @@ public class ChessClient {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
-                case "login" -> login();
+                case "login" -> login(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -35,12 +35,16 @@ public class ChessClient {
         }
     }
 
-    private String register() throws ResponseException {
-        return "";
+    private String register(String... params) throws ResponseException {
+        server.register(params[0], params[1], params[2]);
+        state = State.SIGNEDIN;
+        return "Registered " + params[0];
     }
 
     private String login(String[] params) throws ResponseException {
-        return "";
+        server.login(params[0], params[1]);
+        state = State.SIGNEDIN;
+        return "Logged in " + params[0];
     }
 
     public String help() {
