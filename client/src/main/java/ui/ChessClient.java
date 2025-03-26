@@ -3,6 +3,7 @@ package ui;
 import java.util.Arrays;
 import java.util.Collection;
 
+import chess.ChessGame;
 import dto.ListGameData;
 import dto.ListGamesResponse;
 import server.ResponseException;
@@ -27,7 +28,7 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "create" -> create(params);
                 case "list" -> list();
-//                case "join" -> join(params);
+                case "join" -> join(params);
 //                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
@@ -62,6 +63,11 @@ public class ChessClient {
 
     private String list() throws ResponseException {
         return server.listGames();
+    }
+
+    private String join(String... params) throws ResponseException {
+        server.joinGame(Integer.parseInt(params[0]), ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
+        return "Joined game " + params[0] + "as color " + params[1];
     }
 
     public String help() {

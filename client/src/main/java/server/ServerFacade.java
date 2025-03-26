@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dto.*;
 
@@ -45,6 +46,11 @@ public class ServerFacade {
         CreateGameRequest createGameRequest = new CreateGameRequest(gameName, authToken);
         CreateGameResponse createGameResponse = makeRequest("POST", "/game", createGameRequest, CreateGameResponse.class);
         return createGameResponse.gameID();
+    }
+
+    public void joinGame(int gameId, ChessGame.TeamColor color) throws ResponseException {
+        JoinGameRequest joinGameRequest = new JoinGameRequest(gameId, color, authToken);
+        makeRequest("POST", "/game", joinGameRequest, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
