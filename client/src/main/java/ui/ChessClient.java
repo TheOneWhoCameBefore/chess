@@ -2,21 +2,15 @@ package ui;
 
 import java.util.Arrays;
 
-import com.google.gson.Gson;
 import server.ResponseException;
 import server.ServerFacade;
 
-import javax.xml.stream.events.StartElement;
-
 public class ChessClient {
-    private String visitorName = null;
     private final ServerFacade server;
-    private final String serverUrl;
-    private State state = State.SIGNEDOUT;
+    public State state = State.SIGNEDOUT;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
     }
 
     public String eval(String input) {
@@ -27,6 +21,11 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
+//                case "create" -> create(params);
+//                case "list" -> list();
+//                case "join" -> join(params);
+//                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -41,10 +40,16 @@ public class ChessClient {
         return "Registered " + params[0];
     }
 
-    private String login(String[] params) throws ResponseException {
+    private String login(String... params) throws ResponseException {
         server.login(params[0], params[1]);
         state = State.SIGNEDIN;
         return "Logged in " + params[0];
+    }
+
+    private String logout() throws ResponseException {
+        server.logout();
+        state = State.SIGNEDOUT;
+        return "Logged out";
     }
 
     public String help() {

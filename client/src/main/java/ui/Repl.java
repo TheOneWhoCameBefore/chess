@@ -1,10 +1,6 @@
 package ui;
 
-import javax.management.Notification;
 import java.util.Scanner;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.Constants.RESET;
-import static java.awt.Color.*;
 
 public class Repl {
     private final ChessClient client;
@@ -15,7 +11,6 @@ public class Repl {
 
     public void run() {
         System.out.println("♕ Welcome to 240 chess. Type Help to get started. ♕");
-        System.out.print(client.help());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -25,7 +20,7 @@ public class Repl {
 
             try {
                 result = client.eval(line);
-                System.out.print(BLUE + result);
+                System.out.print(result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -40,7 +35,11 @@ public class Repl {
 //    }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + GREEN);
+        if (client.state == State.SIGNEDIN) {
+            System.out.print("\n[LOGGED IN]>>> ");
+        } else if (client.state == State.SIGNEDOUT) {
+            System.out.print("\n[LOGGED OUT]>>> ");
+        }
     }
 
 }
