@@ -1,7 +1,10 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.Collection;
 
+import dto.ListGameData;
+import dto.ListGamesResponse;
 import server.ResponseException;
 import server.ServerFacade;
 
@@ -23,7 +26,7 @@ public class ChessClient {
                 case "login" -> login(params);
                 case "logout" -> logout();
                 case "create" -> create(params);
-//                case "list" -> list();
+                case "list" -> list();
 //                case "join" -> join(params);
 //                case "observe" -> observe(params);
                 case "quit" -> "quit";
@@ -55,6 +58,10 @@ public class ChessClient {
     private String create(String... params) throws ResponseException {
         int gameId = server.createGame(params[0]);
         return "Created game " + params[0] + " with id " + gameId;
+    }
+
+    private String list() throws ResponseException {
+        return server.listGames();
     }
 
     public String help() {
