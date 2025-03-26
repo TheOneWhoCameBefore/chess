@@ -25,8 +25,8 @@ public class ChessClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "register" -> rescuePet(params);
-                case "login" -> listPets();
+                case "register" -> register(params);
+                case "login" -> login();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -35,29 +35,34 @@ public class ChessClient {
         }
     }
 
-    private String listPets() throws ResponseException {
+    private String register() throws ResponseException {
         return "";
     }
 
-    private String rescuePet(String[] params) throws ResponseException {
+    private String login(String[] params) throws ResponseException {
         return "";
     }
 
     public String help() {
         if (state == State.SIGNEDOUT) {
             return """
-                    - signIn <yourname>
-                    - quit
+                    - register <username> <password> <email> - create and log in to an account
+                    - login <username> <password> - log in to an existing account
+                    - quit - exit the application
+                    - help - display this help text
+                    """;
+        } else if (state == State.SIGNEDIN) {
+            return """
+                    - create <name> - create a new game
+                    - list - list all existing games
+                    - join <gameId> <WHITE|BLACK> - join an existing game as the specified color
+                    - observe <gameId> - join an existing game as an observer
+                    - logout - log out of current account
+                    - quit - exit the application
+                    - help - display this help text
                     """;
         }
-        return """
-                - list
-                - adopt <pet id>
-                - rescue <name> <CAT|DOG|FROG|FISH>
-                - adoptAll
-                - signOut
-                - quit
-                """;
+        return "";
     }
 
     private void assertSignedIn() throws ResponseException {
