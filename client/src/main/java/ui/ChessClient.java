@@ -22,7 +22,7 @@ public class ChessClient {
                 case "register" -> register(params);
                 case "login" -> login(params);
                 case "logout" -> logout();
-//                case "create" -> create(params);
+                case "create" -> create(params);
 //                case "list" -> list();
 //                case "join" -> join(params);
 //                case "observe" -> observe(params);
@@ -50,6 +50,11 @@ public class ChessClient {
         server.logout();
         state = State.SIGNEDOUT;
         return "Logged out";
+    }
+
+    private String create(String... params) throws ResponseException {
+        int gameId = server.createGame(params[0]);
+        return "Created game " + params[0] + " with id " + gameId;
     }
 
     public String help() {
