@@ -1,14 +1,18 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.List;
 
 import chess.ChessGame;
+import dto.ListGameData;
+import dto.ListGamesResponse;
 import server.ResponseException;
 import server.ServerFacade;
 
 public class ChessClient {
     private final ServerFacade server;
     public State state = State.SIGNEDOUT;
+    private List<ListGameData> mostRecentGamesList;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -36,15 +40,23 @@ public class ChessClient {
     }
 
     private String register(String... params) throws ResponseException {
-        server.register(params[0], params[1], params[2]);
-        state = State.SIGNEDIN;
-        return "Registered " + params[0];
+        try {
+            server.register(params[0], params[1], params[2]);
+            state = State.SIGNEDIN;
+            return "Registered " + params[0];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ResponseException(500, "Error: missing username, password, or email");
+        }
     }
 
     private String login(String... params) throws ResponseException {
-        server.login(params[0], params[1]);
-        state = State.SIGNEDIN;
-        return "Logged in " + params[0];
+        try {
+            server.login(params[0], params[1]);
+            state = State.SIGNEDIN;
+            return "Logged in " + params[0];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ResponseException(500, "Error: missing username or password");
+        }
     }
 
     private String logout() throws ResponseException {
@@ -56,27 +68,44 @@ public class ChessClient {
 
     private String create(String... params) throws ResponseException {
         assertSignedIn();
-        int gameId = server.createGame(params[0]);
-        return "Created game " + params[0] + " with id " + gameId;
+        try {
+            int gameId = server.createGame(params[0]);
+            return "Created game " + params[0] + " with id " + gameId;
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new ResponseException(500, "Error: missing game name");
+        }
     }
 
     private String list() throws ResponseException {
         assertSignedIn();
-        return server.listGames();
+        ListGamesResponse listGamesResponse = server.listGames();
+        mostRecentGamesList = List.copyOf(listGamesResponse.games());
+        return listGamesResponse.toString();
     }
 
     private String join(String... params) throws ResponseException {
         assertSignedIn();
-        server.joinGame(Integer.parseInt(params[0]), ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
-        state = State.INGAME;
-        //Get the game instance somehow
-        return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
+        try {
+            int gameId = mostRecentGamesList.get(Integer.parseInt(params[0]) - 1).gameID();
+            ChessGame.TeamColor color = ChessGame.TeamColor.valueOf(params[1].toUpperCase());
+            server.joinGame(gameId, color);
+            state = State.INGAME;
+            //Get the game instance somehow
+            return new PrintGame(new ChessGame()).printBoard(color);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
+            throw new ResponseException(500, "Error: unknown game or color. Try listing all games with \"list\"");
+        }
     }
 
     private String observe(String... params) throws ResponseException {
         assertSignedIn();
-        //Get the game instance somehow
-        return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.WHITE);
+        try {
+            int gameId = mostRecentGamesList.get(Integer.parseInt(params[0]) - 1).gameID();
+            //Get the game instance somehow
+            return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.WHITE);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
+            throw new ResponseException(500, "Error: unknown game. Try listing all games with \"list\"");
+        }
     }
 
     public String help() {

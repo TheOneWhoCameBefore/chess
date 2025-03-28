@@ -14,7 +14,7 @@ public class PrintGame {
 
     public PrintGame(ChessGame game) {
         this.game = game;
-        currentShade = AlternatingShade.DARK;
+        currentShade = AlternatingShade.LIGHT;
     }
 
     public enum AlternatingShade {
@@ -24,7 +24,7 @@ public class PrintGame {
 
     public String printBoard(ChessGame.TeamColor perspective) {
         StringBuilder stringBoard = new StringBuilder();
-        String[] ranks = {FULL_1, FULL_2, FULL_3, FULL_4, FULL_5, FULL_6, FULL_7, FULL_8};
+        String[] ranks = {FULL_8, FULL_7, FULL_6, FULL_5, FULL_4, FULL_3, FULL_2, FULL_1};
         String[] columns = {FULL_A, FULL_B, FULL_C, FULL_D, FULL_E, FULL_F, FULL_G, FULL_H};
 
         int start = 8;

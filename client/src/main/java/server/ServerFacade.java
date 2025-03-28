@@ -6,6 +6,8 @@ import dto.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.Collection;
+import java.util.Collections;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -32,9 +34,8 @@ public class ServerFacade {
         authToken = null;
     }
 
-    public String listGames() throws ResponseException {
-        ListGamesResponse listGamesResponse = makeRequest("GET", "/game", null, ListGamesResponse.class);
-        return listGamesResponse.toString();
+    public ListGamesResponse listGames() throws ResponseException {
+        return makeRequest("GET", "/game", null, ListGamesResponse.class);
     }
 
     public int createGame(String gameName) throws ResponseException {
