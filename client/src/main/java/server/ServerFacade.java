@@ -6,7 +6,6 @@ import dto.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.Collection;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -14,10 +13,6 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
-    }
-
-    public void clear() throws ResponseException {
-        makeRequest("DELETE", "/db", null, null);
     }
 
     public void register(String username, String password, String email) throws ResponseException {
@@ -50,7 +45,7 @@ public class ServerFacade {
 
     public void joinGame(int gameId, ChessGame.TeamColor color) throws ResponseException {
         JoinGameRequest joinGameRequest = new JoinGameRequest(gameId, color, authToken);
-        makeRequest("POST", "/game", joinGameRequest, null);
+        makeRequest("PUT", "/game", joinGameRequest, null);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

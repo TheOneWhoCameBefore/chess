@@ -29,16 +29,13 @@ public class Repl {
         System.out.println();
     }
 
-//    public void notify(Notification notification) {
-//        System.out.println(RED + notification.message());
-//        printPrompt();
-//    }
-
     private void printPrompt() {
         if (client.state == State.SIGNEDIN) {
             System.out.print("\n[LOGGED IN]>>> ");
         } else if (client.state == State.SIGNEDOUT) {
             System.out.print("\n[LOGGED OUT]>>> ");
+        } else if (client.state == State.INGAME) {
+            System.out.print("\n[IN GAME]>>> ");
         }
     }
 

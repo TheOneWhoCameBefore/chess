@@ -1,11 +1,8 @@
 package ui;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import chess.ChessGame;
-import dto.ListGameData;
-import dto.ListGamesResponse;
 import server.ResponseException;
 import server.ServerFacade;
 
@@ -51,23 +48,28 @@ public class ChessClient {
     }
 
     private String logout() throws ResponseException {
+        assertSignedIn();
         server.logout();
         state = State.SIGNEDOUT;
         return "Logged out";
     }
 
     private String create(String... params) throws ResponseException {
+        assertSignedIn();
         int gameId = server.createGame(params[0]);
         return "Created game " + params[0] + " with id " + gameId;
     }
 
     private String list() throws ResponseException {
+        assertSignedIn();
         return server.listGames();
     }
 
     private String join(String... params) throws ResponseException {
+        assertSignedIn();
         server.joinGame(Integer.parseInt(params[0]), ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
-        return "Joined game " + params[0] + "as color " + params[1];
+        state = State.INGAME;
+        return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
     }
 
     public String help() {

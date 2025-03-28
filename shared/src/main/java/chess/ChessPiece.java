@@ -12,7 +12,7 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private ChessGame.TeamColor pieceColor;
+    private final ChessGame.TeamColor pieceColor;
     private ChessPiece.PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
@@ -91,7 +91,6 @@ public class ChessPiece {
             case KNIGHT -> getKnightMoves(board, myPosition);
             case ROOK -> getRookMoves(board, myPosition);
             case PAWN -> getPawnMoves(board, myPosition);
-            default -> new ArrayList<>();
         };
     }
 
@@ -252,5 +251,5 @@ public class ChessPiece {
                 new ChessMove(myPosition, newPosition, PieceType.ROOK),
                 new ChessMove(myPosition, newPosition, PieceType.KNIGHT)
         });
-    };
+    }
  }
