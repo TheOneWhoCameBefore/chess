@@ -65,5 +65,23 @@ public class EscapeSequences {
     public static final String BLACK_PAWN = SET_TEXT_COLOR_BLACK + " ♟ ";
     public static final String EMPTY = " \u2003 ";
 
+    public static final String FULL_A = " \uFF21 ";
+    public static final String FULL_B = " \uFF22 ";
+    public static final String FULL_C = " \uFF23 ";
+    public static final String FULL_D = " \uFF24 ";
+    public static final String FULL_E = " \uFF25 ";
+    public static final String FULL_F = " \uFF26 ";
+    public static final String FULL_G = " \uFF27 ";
+    public static final String FULL_H = " \uFF28 ";
+
+    public static final String FULL_1 = " \uFF11 ";
+    public static final String FULL_2 = " \uFF12 ";
+    public static final String FULL_3 = " \uFF13 ";
+    public static final String FULL_4 = " \uFF14 ";
+    public static final String FULL_5 = " \uFF15 ";
+    public static final String FULL_6 = " \uFF16 ";
+    public static final String FULL_7 = " \uFF17 ";
+    public static final String FULL_8 = " \uFF18 ";
+
     public static String moveCursorToLocation(int x, int y) { return UNICODE_ESCAPE + "[" + y + ";" + x + "H"; }
 }
