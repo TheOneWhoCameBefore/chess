@@ -26,7 +26,7 @@ public class ChessClient {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "join" -> join(params);
-//                case "observe" -> observe(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -69,7 +69,14 @@ public class ChessClient {
         assertSignedIn();
         server.joinGame(Integer.parseInt(params[0]), ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
         state = State.INGAME;
+        //Get the game instance somehow
         return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
+    }
+
+    private String observe(String... params) throws ResponseException {
+        assertSignedIn();
+        //Get the game instance somehow
+        return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.WHITE);
     }
 
     public String help() {
