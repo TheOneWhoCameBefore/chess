@@ -56,7 +56,12 @@ public class PrintGame {
                     stringBoard.append(EMPTY);
                 }
             }
-            stringBoard.append(getNextGrey()).append(SET_TEXT_COLOR_BLACK).append(rankIndex).append(getNextGrey()).append(RESET_BG_COLOR).append("\n");
+            stringBoard.append(getNextGrey())
+                    .append(SET_TEXT_COLOR_BLACK)
+                    .append(rankIndex)
+                    .append(getNextGrey())
+                    .append(RESET_BG_COLOR)
+                    .append("\n");
         }
         stringBoard.append(getNextGrey()).append(EMPTY);
         for (String column : columns) {
