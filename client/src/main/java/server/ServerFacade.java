@@ -6,8 +6,6 @@ import dto.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.Collection;
-import java.util.Collections;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -15,6 +13,10 @@ public class ServerFacade {
 
     public ServerFacade(String url) {
         serverUrl = url;
+    }
+
+    public void clear() throws ResponseException {
+        makeRequest("DELETE", "/db", null, null);
     }
 
     public void register(String username, String password, String email) throws ResponseException {
