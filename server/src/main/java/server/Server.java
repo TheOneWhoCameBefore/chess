@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.*;
 import dto.*;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import spark.*;
 import service.*;
 
 public class Server {
     private static final Gson SERIALIZER = new Gson();
+    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
     private DatabaseService databaseService;
     private GameService gameService;
     private UserService userService;
@@ -17,6 +19,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
 
         try {
             MySqlDataAccess dataAccess = new MySqlDataAccess();
@@ -27,6 +30,8 @@ public class Server {
             System.out.printf("Unable to start server: %s%n", e.getMessage());
             return -1;
         }
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
