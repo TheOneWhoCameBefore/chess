@@ -44,7 +44,7 @@ public class ChessClient {
             server.register(params[0], params[1], params[2]);
             state = State.SIGNEDIN;
             return "Registered " + params[0];
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             throw new ResponseException(500, "Error: missing username, password, or email");
         }
     }
@@ -54,7 +54,7 @@ public class ChessClient {
             server.login(params[0], params[1]);
             state = State.SIGNEDIN;
             return "Logged in " + params[0];
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             throw new ResponseException(500, "Error: missing username or password");
         }
     }
@@ -71,7 +71,7 @@ public class ChessClient {
         try {
             int gameId = server.createGame(params[0]);
             return "Created game " + params[0] + " with id " + gameId;
-        } catch (ArrayIndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             throw new ResponseException(500, "Error: missing game name");
         }
     }
@@ -92,7 +92,7 @@ public class ChessClient {
             state = State.INGAME;
             //Get the game instance somehow
             return new PrintGame(new ChessGame()).printBoard(color);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
             throw new ResponseException(500, "Error: unknown game or color. Try listing all games with \"list\"");
         }
     }
@@ -103,7 +103,7 @@ public class ChessClient {
             int gameId = mostRecentGamesList.get(Integer.parseInt(params[0]) - 1).gameID();
             //Get the game instance somehow
             return new PrintGame(new ChessGame()).printBoard(ChessGame.TeamColor.WHITE);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException | NullPointerException ex) {
             throw new ResponseException(500, "Error: unknown game. Try listing all games with \"list\"");
         }
     }
