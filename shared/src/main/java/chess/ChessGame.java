@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class ChessGame {
 
+    private Boolean inProgress = true;
     private ChessBoard gameBoard;
     private TeamColor teamTurn;
 
@@ -54,6 +55,13 @@ public class ChessGame {
         gameBoard = board;
     }
 
+    public Boolean isFinished() {
+        return inProgress;
+    }
+
+    public void setFinished() {
+        inProgress = false;
+    }
     /**
      * Gets the current chessboard
      *
@@ -62,6 +70,7 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return gameBoard;
     }
+
 
     /**
      * Gets the positions of the specified team's pieces

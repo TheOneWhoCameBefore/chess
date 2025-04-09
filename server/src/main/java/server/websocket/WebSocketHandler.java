@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,8 +13,10 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.ConnectUserGameCommand;
+import websocket.commands.LeaveUserGameCommand;
 import websocket.commands.MakeMoveUserGameCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGameServerMessage;
 import websocket.messages.NotificationServerMessage;
 import websocket.messages.ServerMessage;
 
@@ -25,9 +28,9 @@ import java.io.IOException;
 public class WebSocketHandler {
 
     private final ConnectionManager connections = new ConnectionManager();
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
-    private UserDAO userDAO;
+    private final AuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final UserDAO userDAO;
 
     public WebSocketHandler(AuthDAO authDAO, GameDAO gameDAO, UserDAO userDAO) {
         this.authDAO = authDAO;
@@ -42,8 +45,8 @@ public class WebSocketHandler {
         switch (commandType) {
             case CONNECT -> connect(jsonObject, session);
             case MAKE_MOVE -> makeMove(jsonObject, session);
-//            case LEAVE -> leave(jsonObject, session);
-//            case RESIGN -> resign(jsonObject, session);
+            case LEAVE -> leave(jsonObject, session);
+            case RESIGN -> resign(jsonObject, session);
         }
     }
 
@@ -60,11 +63,16 @@ public class WebSocketHandler {
             } else {
                 role = "an observer";
             }
+
             connections.add(username, session);
-            NotificationServerMessage serverMessage = new NotificationServerMessage(
+
+            NotificationServerMessage notificationServerMessage = new NotificationServerMessage(
                     ServerMessage.ServerMessageType.NOTIFICATION,
                     String.format("%s joined the game as %s", username, role));
-            connections.broadcast(null, serverMessage);
+            connections.broadcast(username, notificationServerMessage);
+
+            LoadGameServerMessage loadGameServerMessage = new LoadGameServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game.game());
+            connections.sendMessage(username, loadGameServerMessage);
         } catch (DataAccessException e) {
             throw new IOException(e.getMessage());
         }
@@ -74,33 +82,98 @@ public class WebSocketHandler {
         MakeMoveUserGameCommand makeMoveUserGameCommand = new Gson().fromJson(jsonGameCommand, MakeMoveUserGameCommand.class);
         try {
             String username = authDAO.retrieveAuth(makeMoveUserGameCommand.getAuthToken()).username();
+            GameData game = gameDAO.retrieveGame(makeMoveUserGameCommand.getGameID());
+            String role;
+            if (game.whiteUsername().equals(username)) {
+                role = "white";
+            } else if (game.blackUsername().equals(username)) {
+                role = "black";
+            } else {
+                role = "an observer";
+            }
 
+            NotificationServerMessage serverMessage = new NotificationServerMessage(
+                    ServerMessage.ServerMessageType.NOTIFICATION,
+                    String.format("%s made move %s", username, makeMoveUserGameCommand.getMove().toAlgebraicNotation(game.game())));
+            connections.broadcast(username, serverMessage);
+
+            game.game().makeMove(makeMoveUserGameCommand.getMove());
+            gameDAO.updateGame(
+                    makeMoveUserGameCommand.getGameID(),
+                    game.whiteUsername(),
+                    game.blackUsername(),
+                    game.gameName(),
+                    game.game()
+            );
+
+            LoadGameServerMessage loadGameServerMessage = new LoadGameServerMessage(ServerMessage.ServerMessageType.LOAD_GAME, game.game());
+            connections.broadcast("", loadGameServerMessage);
+        } catch (DataAccessException | InvalidMoveException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+
+    private void leave(JsonObject jsonGameCommand, Session session) throws IOException {
+        LeaveUserGameCommand leaveUserGameCommand = new Gson().fromJson(jsonGameCommand, LeaveUserGameCommand.class);
+        try {
+            String username = authDAO.retrieveAuth(leaveUserGameCommand.getAuthToken()).username();
+            GameData game = gameDAO.retrieveGame(leaveUserGameCommand.getGameID());
+            String role;
+            if (game.whiteUsername().equals(username)) {
+                role = "white";
+                gameDAO.updateGame(
+                        leaveUserGameCommand.getGameID(),
+                        null,
+                        game.blackUsername(),
+                        game.gameName(),
+                        game.game()
+                );
+            } else if (game.blackUsername().equals(username)) {
+                role = "black";
+                gameDAO.updateGame(
+                        leaveUserGameCommand.getGameID(),
+                        game.whiteUsername(),
+                        null,
+                        game.gameName(),
+                        game.game()
+                );
+            } else {
+                role = "an observer";
+            }
+
+            NotificationServerMessage serverMessage = new NotificationServerMessage(
+                    ServerMessage.ServerMessageType.NOTIFICATION,
+                    String.format("%s (%s) left the game.", username, role));
+            connections.broadcast(username, serverMessage);
         } catch (DataAccessException e) {
             throw new IOException(e.getMessage());
         }
     }
 
-//    private void enter(String visitorName, Session session) throws IOException {
-//        connections.add(visitorName, session);
-//        var message = String.format("%s is in the shop", visitorName);
-//        var notification = new ServerMessage(ServerMessage.ServerMessageType.ARRIVAL, message);
-//        connections.broadcast(visitorName, notification);
-//    }
-//
-//    private void exit(String visitorName) throws IOException {
-//        connections.remove(visitorName);
-//        var message = String.format("%s left the shop", visitorName);
-//        var notification = new ServerMessage(ServerMessage.ServerMessageType.DEPARTURE, message);
-//        connections.broadcast(visitorName, notification);
-//    }
-//
-//    public void makeNoise(String petName, String sound) throws ResponseException {
-//        try {
-//            var message = String.format("%s says %s", petName, sound);
-//            var notification = new ServerMessage(ServerMessage.ServerMessageType.NOISE, message);
-//            connections.broadcast("", notification);
-//        } catch (Exception ex) {
-//            throw new ResponseException(500, ex.getMessage());
-//        }
-//    }
+    private void resign(JsonObject jsonGameCommand, Session session) throws IOException {
+        LeaveUserGameCommand leaveUserGameCommand = new Gson().fromJson(jsonGameCommand, LeaveUserGameCommand.class);
+        try {
+            String username = authDAO.retrieveAuth(leaveUserGameCommand.getAuthToken()).username();
+            GameData game = gameDAO.retrieveGame(leaveUserGameCommand.getGameID());
+            if (game.whiteUsername().equals(username) || game.blackUsername().equals(username)) {
+                game.game().setFinished();
+                gameDAO.updateGame(
+                        leaveUserGameCommand.getGameID(),
+                        game.whiteUsername(),
+                        game.blackUsername(),
+                        game.gameName(),
+                        game.game()
+                );
+
+                NotificationServerMessage serverMessage = new NotificationServerMessage(
+                        ServerMessage.ServerMessageType.NOTIFICATION,
+                        String.format("%s (%s) resigned.", username, game.whiteUsername().equals(username) ? "white" : "black"));
+                connections.broadcast(null, serverMessage);
+            } else {
+                // Tell the observer they bein silly
+            }
+        } catch (DataAccessException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 }
