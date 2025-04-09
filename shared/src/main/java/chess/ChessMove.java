@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -50,6 +51,22 @@ public class ChessMove {
     @Override
     public int hashCode() {
         return Objects.hash(getStartPosition(), getEndPosition(), getPromotionPiece());
+    }
+
+    public String toAlgebraicNotation(ChessGame game) {
+        return "" + (char) ('a' + startPosition.getColumn() - 1) + startPosition.getRow() + (char) ('a' + endPosition.getColumn() - 1) + endPosition.getRow();
+    }
+
+    public ChessMove fromAlgebraicNotation(String notation) {
+        int startColumn = notation.charAt(0) - 'a' + 1;
+        int startRow = Character.getNumericValue((notation.charAt(1)));
+        ChessPosition startPosition = new ChessPosition(startRow, startColumn);
+
+        int endColumn = notation.charAt(2) - 'a' + 1;
+        int endRow = Character.getNumericValue(notation.charAt(3));
+        ChessPosition endPosition = new ChessPosition(endRow, endColumn);
+
+        return new ChessMove(startPosition, endPosition);
     }
 
     /**
