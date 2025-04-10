@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class ChessGame {
 
-    private Boolean inProgress = true;
+    public Boolean inProgress = true;
     private ChessBoard gameBoard;
     private TeamColor teamTurn;
 
@@ -53,10 +53,6 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         gameBoard = board;
-    }
-
-    public Boolean isFinished() {
-        return inProgress;
     }
 
     public void setFinished() {
@@ -127,7 +123,8 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if (validMoves(move.getStartPosition()) != null &&
             teamTurn == gameBoard.getPiece(move.getStartPosition()).getTeamColor() &&
-            validMoves(move.getStartPosition()).contains(move)) {
+            validMoves(move.getStartPosition()).contains(move) &&
+            this.inProgress) {
             gameBoard.makeMove(move);
             if (teamTurn == TeamColor.WHITE) {
                 setTeamTurn(TeamColor.BLACK);
