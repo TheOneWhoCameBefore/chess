@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import dataaccess.*;
 import dto.*;
+import server.websocket.WebSocketHandler;
 import spark.*;
 import service.*;
 
@@ -18,15 +19,20 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        WebSocketHandler webSocketHandler;
+
         try {
             MySqlDataAccess dataAccess = new MySqlDataAccess();
             databaseService = new DatabaseService(dataAccess.authDAO, dataAccess.gameDAO, dataAccess.userDAO);
             gameService = new GameService(dataAccess.authDAO, dataAccess.gameDAO);
             userService = new UserService(dataAccess.authDAO, dataAccess.userDAO);
+            webSocketHandler = new server.websocket.WebSocketHandler(dataAccess.authDAO, dataAccess.gameDAO, dataAccess.userDAO);
         } catch (Throwable e) {
             System.out.printf("Unable to start server: %s%n", e.getMessage());
             return -1;
         }
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);

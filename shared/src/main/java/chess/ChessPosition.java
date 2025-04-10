@@ -10,11 +10,11 @@ import java.util.Objects;
  */
 public class ChessPosition {
     private final int row;
-    private final int col;
+    private final int column;
 
-    public ChessPosition(int row, int col) {
+    public ChessPosition(int row, int column) {
         this.row = row;
-        this.col = col;
+        this.column = column;
     }
 
     @Override
@@ -44,6 +44,6 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col;
+        return column;
     }
 }

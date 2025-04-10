@@ -13,9 +13,9 @@ import java.util.Objects;
  */
 public class ChessPiece {
     private final ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType type;
+    private PieceType type;
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
     }
@@ -38,7 +38,19 @@ public class ChessPiece {
         BISHOP,
         KNIGHT,
         ROOK,
-        PAWN
+        PAWN;
+
+        public static PieceType fromLetter(char letter) {
+            return switch (letter) {
+                case 'K' -> KING;
+                case 'Q' -> QUEEN;
+                case 'B' -> BISHOP;
+                case 'N' -> KNIGHT;
+                case 'R' -> ROOK;
+                case 'P' -> PAWN;
+                default -> throw new IllegalStateException("Unexpected value: " + letter);
+            };
+        }
     }
 
     @Override
@@ -74,6 +86,17 @@ public class ChessPiece {
      */
     public void setPieceType(PieceType pieceType) {
         type = pieceType;
+    }
+
+    public String toLetter() {
+        return switch (this.getPieceType()) {
+            case KING -> "K";
+            case QUEEN -> "Q";
+            case BISHOP -> "B";
+            case ROOK -> "R";
+            case KNIGHT -> "N";
+            case PAWN -> "";
+        };
     }
 
     /**

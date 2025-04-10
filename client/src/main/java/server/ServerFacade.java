@@ -19,34 +19,35 @@ public class ServerFacade {
         makeRequest("DELETE", "/db", null, null);
     }
 
-    public void register(String username, String password, String email) throws ResponseException {
+    public String register(String username, String password, String email) throws ResponseException {
         RegisterRequest registerRequest = new RegisterRequest(email, password, username);
         RegisterResponse registerResponse = makeRequest("POST", "/user", registerRequest, RegisterResponse.class);
         authToken = registerResponse.authToken();
+        return authToken;
     }
 
-    public void login(String username, String password) throws ResponseException {
+    public String login(String username, String password) throws ResponseException {
         LoginRequest loginRequest = new LoginRequest(username, password);
         LoginResponse loginResponse = makeRequest("POST", "/session", loginRequest, LoginResponse.class);
         authToken = loginResponse.authToken();
+        return authToken;
     }
 
     public void logout() throws ResponseException {
         makeRequest("DELETE", "/session", null, null);
-        authToken = null;
     }
 
-    public ListGamesResponse listGames() throws ResponseException {
+    public ListGamesResponse listGames(String authToken) throws ResponseException {
         return makeRequest("GET", "/game", null, ListGamesResponse.class);
     }
 
-    public int createGame(String gameName) throws ResponseException {
+    public int createGame(String authToken, String gameName) throws ResponseException {
         CreateGameRequest createGameRequest = new CreateGameRequest(gameName, authToken);
         CreateGameResponse createGameResponse = makeRequest("POST", "/game", createGameRequest, CreateGameResponse.class);
         return createGameResponse.gameID();
     }
 
-    public void joinGame(int gameId, ChessGame.TeamColor color) throws ResponseException {
+    public void joinGame(String authToken, int gameId, ChessGame.TeamColor color) throws ResponseException {
         JoinGameRequest joinGameRequest = new JoinGameRequest(gameId, color, authToken);
         makeRequest("PUT", "/game", joinGameRequest, null);
     }

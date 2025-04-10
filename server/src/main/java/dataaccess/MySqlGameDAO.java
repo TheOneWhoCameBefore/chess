@@ -38,7 +38,7 @@ public class MySqlGameDAO implements GameDAO {
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
+        throw new DataAccessException(String.format("No game found for id %s", gameID));
     }
 
     public Collection<GameData> retrieveAllGames() throws DataAccessException {
