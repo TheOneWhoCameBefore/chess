@@ -76,18 +76,21 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void reprintGame(ChessGame game) throws ResponseException {
-        System.out.println("\n" + new PrintGame(game).printBoard(Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, null));
+        System.out.println("\n" + new PrintGame(game).printBoard(
+                Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, null));
         repl.printPrompt();
     }
 
     public void showMoves(ChessGame game, ChessPosition position) throws ResponseException {
-        System.out.println("\n" + new PrintGame(game).printBoard(Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, position));
+        System.out.println("\n" + new PrintGame(game).printBoard(
+                Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, position));
         repl.printPrompt();
     }
 
     public void makeMove(String authToken, int gameID, ChessMove move) throws ResponseException {
         try {
-            MakeMoveUserGameCommand makeMoveUserGameCommand = new MakeMoveUserGameCommand(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
+            MakeMoveUserGameCommand makeMoveUserGameCommand = new MakeMoveUserGameCommand(
+                    UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID, move);
             this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveUserGameCommand));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());

@@ -38,19 +38,7 @@ public class ChessPiece {
         BISHOP,
         KNIGHT,
         ROOK,
-        PAWN;
-
-        public static PieceType fromLetter(char letter) {
-            return switch (letter) {
-                case 'K' -> KING;
-                case 'Q' -> QUEEN;
-                case 'B' -> BISHOP;
-                case 'N' -> KNIGHT;
-                case 'R' -> ROOK;
-                case 'P' -> PAWN;
-                default -> throw new IllegalStateException("Unexpected value: " + letter);
-            };
-        }
+        PAWN
     }
 
     @Override
@@ -86,17 +74,6 @@ public class ChessPiece {
      */
     public void setPieceType(PieceType pieceType) {
         type = pieceType;
-    }
-
-    public String toLetter() {
-        return switch (this.getPieceType()) {
-            case KING -> "K";
-            case QUEEN -> "Q";
-            case BISHOP -> "B";
-            case ROOK -> "R";
-            case KNIGHT -> "N";
-            case PAWN -> "";
-        };
     }
 
     /**
