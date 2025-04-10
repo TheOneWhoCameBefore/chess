@@ -70,7 +70,9 @@ public class DatabaseTests {
 
     @Test
     public void testRetrieveAuthFail() throws DataAccessException {
-        assertNull(authDAO.retrieveAuth("testRetrieveAuthToken"));
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.retrieveAuth("testRetrieveAuthToken");
+        });
     }
 
     @Test
@@ -80,7 +82,9 @@ public class DatabaseTests {
         authDAO.createAuth(authToken, username);
 
         authDAO.deleteAuth(authToken);
-        assertNull(authDAO.retrieveAuth("testAuthToken"));
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.retrieveAuth("testAuthToken");
+        });
     }
 
     @Test
@@ -90,9 +94,15 @@ public class DatabaseTests {
         authDAO.createAuth("testAuthToken3", "testUsername3");
 
         authDAO.deleteAllAuth();
-        assertNull(authDAO.retrieveAuth("testAuthToken1"));
-        assertNull(authDAO.retrieveAuth("testAuthToken2"));
-        assertNull(authDAO.retrieveAuth("testAuthToken3"));
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.retrieveAuth("testAuthToken1");
+        });
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.retrieveAuth("testAuthToken2");
+        });
+        assertThrows(DataAccessException.class, () -> {
+            authDAO.retrieveAuth("testAuthToken3");
+        });
     }
 
     @Test
@@ -113,14 +123,15 @@ public class DatabaseTests {
     @Test
     public void testRetrieveGameSuccess() throws DataAccessException {
         gameDAO.createGame(null, null, "testGame", new ChessGame());
-
         GameData game = gameDAO.retrieveGame(1);
         assertEquals("testGame", game.gameName());
     }
 
     @Test
     public void testRetrieveGameFail() throws DataAccessException {
-        assertNull(gameDAO.retrieveGame(1));
+        assertThrows(DataAccessException.class, () -> {
+            gameDAO.retrieveGame(1);
+        });
     }
 
     @Test
@@ -165,9 +176,15 @@ public class DatabaseTests {
         gameDAO.createGame(null, null, "testGame3", new ChessGame());
 
         gameDAO.deleteAllGames();
-        assertNull(gameDAO.retrieveGame(1));
-        assertNull(gameDAO.retrieveGame(2));
-        assertNull(gameDAO.retrieveGame(3));
+        assertThrows(DataAccessException.class, () -> {
+            gameDAO.retrieveGame(1);
+        });
+        assertThrows(DataAccessException.class, () -> {
+            gameDAO.retrieveGame(2);
+        });
+        assertThrows(DataAccessException.class, () -> {
+            gameDAO.retrieveGame(3);
+        });
     }
 
     @Test
@@ -199,7 +216,9 @@ public class DatabaseTests {
 
     @Test
     public void testRetrieveUserFail() throws DataAccessException {
-        assertNull(userDAO.retrieveUser("testUsername"));
+        assertThrows(DataAccessException.class, () -> {
+            userDAO.retrieveUser("testUsername");
+        });
     }
 
     @Test
@@ -209,8 +228,14 @@ public class DatabaseTests {
         userDAO.createUser("testUsername3", "testPassword3", "testEmail3");
 
         userDAO.deleteAllUsers();
-        assertNull(userDAO.retrieveUser("testUsername1"));
-        assertNull(userDAO.retrieveUser("testUsername2"));
-        assertNull(userDAO.retrieveUser("testUsername3"));
+        assertThrows(DataAccessException.class, () -> {
+            userDAO.retrieveUser("testUsername1");
+        });
+        assertThrows(DataAccessException.class, () -> {
+            userDAO.retrieveUser("testUsername2");
+        });
+        assertThrows(DataAccessException.class, () -> {
+            userDAO.retrieveUser("testUsername3");
+        });
     }
 }
