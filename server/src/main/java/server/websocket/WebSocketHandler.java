@@ -44,9 +44,9 @@ public class WebSocketHandler {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         UserGameCommand.CommandType commandType = command.getCommandType();
-        String username = "";
-        GameData game = null;
-        String role = "";
+        String username;
+        GameData game;
+        String role;
         try {
             username = authDAO.retrieveAuth(command.getAuthToken()).username();
             game = gameDAO.retrieveGame(command.getGameID());
