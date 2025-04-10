@@ -65,37 +65,37 @@ public class ServerFacadeTests {
     @Test
     public void testListGamesSuccess() throws ResponseException {
         facade.register("testUsername", "testPassword", "testEmail");
-        facade.login("testUsername", "testPassword");
-        Assertions.assertDoesNotThrow(() -> {facade.listGames();});
+        String authToken = facade.login("testUsername", "testPassword");
+        Assertions.assertDoesNotThrow(() -> {facade.listGames(authToken);});
     }
 
     @Test
     public void testListGamesFail() throws ResponseException {
-        Assertions.assertThrows(ResponseException.class, () -> {facade.listGames();});
+        Assertions.assertThrows(ResponseException.class, () -> {facade.listGames("fakeAuthToken");});
     }
 
     @Test
     public void testCreateGameSuccess() throws ResponseException {
         facade.register("testUsername", "testPassword", "testEmail");
-        facade.login("testUsername", "testPassword");
-        Assertions.assertDoesNotThrow(() -> {facade.createGame("testGame");});
+        String authToken = facade.login("testUsername", "testPassword");
+        Assertions.assertDoesNotThrow(() -> {facade.createGame(authToken, "testGame");});
     }
 
     @Test
     public void testCreateGameFail() throws ResponseException {
-        Assertions.assertThrows(ResponseException.class, () -> {facade.createGame("testGame");});
+        Assertions.assertThrows(ResponseException.class, () -> {facade.createGame("fakeAuthToken", "testGame");});
     }
 
     @Test
     public void testJoinGameSuccess() throws ResponseException {
         facade.register("testUsername", "testPassword", "testEmail");
-        facade.login("testUsername", "testPassword");
-        facade.createGame("testGame");
-        Assertions.assertDoesNotThrow(() -> {facade.joinGame(1, ChessGame.TeamColor.WHITE);});
+        String authToken = facade.login("testUsername", "testPassword");
+        facade.createGame(authToken, "testGame");
+        Assertions.assertDoesNotThrow(() -> {facade.joinGame(authToken, 1, ChessGame.TeamColor.WHITE);});
     }
 
     @Test
     public void testJoinGameFail() throws ResponseException {
-        Assertions.assertThrows(ResponseException.class, () -> {facade.joinGame(1, ChessGame.TeamColor.WHITE);});
+        Assertions.assertThrows(ResponseException.class, () -> {facade.joinGame("fakeAuthToken", 1, ChessGame.TeamColor.WHITE);});
     }
 }

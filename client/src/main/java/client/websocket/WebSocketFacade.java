@@ -4,7 +4,6 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
-import com.sun.nio.sctp.NotificationHandler;
 import server.ResponseException;
 import ui.PrintGame;
 import ui.Repl;
@@ -24,7 +23,7 @@ import java.util.Objects;
 public class WebSocketFacade extends Endpoint {
 
     private final Session session;
-    private Repl repl;
+    private final Repl repl;
     private String role;
 
 
@@ -52,7 +51,7 @@ public class WebSocketFacade extends Endpoint {
                             repl.getClient().setGame(game);
                             repl.loadGame(game, role);
                         }
-                        case ERROR -> repl.error(new Gson().fromJson(message, ErrorServerMessage.class).getMessage());
+                        case ERROR -> repl.error(new Gson().fromJson(message, ErrorServerMessage.class).getErrorMessage());
                     }
                 }
             });

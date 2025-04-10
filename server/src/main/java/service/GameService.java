@@ -24,7 +24,12 @@ public class GameService {
 
     public CreateGameResponse create(CreateGameRequest createGameRequest) throws ResponseException {
         try {
-            AuthData auth = authDAO.retrieveAuth(createGameRequest.getAuthToken());
+            AuthData auth;
+            try {
+                auth = authDAO.retrieveAuth(createGameRequest.getAuthToken());
+            } catch (DataAccessException e) {
+                auth = null;
+            }
             if (auth == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
@@ -37,7 +42,12 @@ public class GameService {
 
     public ListGamesResponse list(ListGamesRequest listGamesRequest) throws ResponseException {
         try {
-            AuthData auth = authDAO.retrieveAuth(listGamesRequest.getAuthToken());
+            AuthData auth;
+            try {
+                auth = authDAO.retrieveAuth(listGamesRequest.getAuthToken());
+            } catch (DataAccessException e) {
+                auth = null;
+            }
             if (auth == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
@@ -54,14 +64,16 @@ public class GameService {
 
     public void join(JoinGameRequest joinGameRequest) throws ResponseException {
         try {
-            AuthData auth = authDAO.retrieveAuth(joinGameRequest.getAuthToken());
-            if (auth == null) {
-                throw new ResponseException(401, "Error: unauthorized");
-            }
-            GameData game = gameDAO.retrieveGame(joinGameRequest.getGameID());
-            if (game == null) {
-                throw new ResponseException(400, "Error: bad request");
-            }
+            AuthData auth;
+            try { auth = authDAO.retrieveAuth(joinGameRequest.getAuthToken()); }
+            catch (DataAccessException e) { auth = null; }
+            if (auth == null) { throw new ResponseException(401, "Error: unauthorized"); }
+
+            GameData game;
+            try { game = gameDAO.retrieveGame(joinGameRequest.getGameID()); }
+            catch (DataAccessException e) {game = null; }
+            if (game == null) { throw new ResponseException(400, "Error: bad request"); }
+
             if ((joinGameRequest.getPlayerColor() == WHITE && game.whiteUsername() != null)
                     || (joinGameRequest.getPlayerColor() == BLACK && game.blackUsername() != null)) {
                 throw new ResponseException(403, "Error: already taken");

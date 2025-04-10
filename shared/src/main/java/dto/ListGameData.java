@@ -5,4 +5,4 @@ public record ListGameData(int gameID, String whiteUsername, String blackUsernam
     public String toString() {
         return String.format("Name: %s    White: %s    Black: %s", gameName, whiteUsername, blackUsername);
     }
-};
+}
