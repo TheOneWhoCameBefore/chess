@@ -1,15 +1,12 @@
 package websocket.messages;
 
-import java.security.PrivateKey;
-import java.sql.PreparedStatement;
-
 public class ErrorServerMessage extends ServerMessage {
-    private final String message;
+    private final String errorMessage;
 
-    public ErrorServerMessage(ServerMessageType type, String message) {
+    public ErrorServerMessage(ServerMessageType type, String errorMessage) {
         super(type);
-        this.message = message;
+        this.errorMessage = errorMessage;
     }
 
-    public String getMessage() { return message; }
+    public String getErrorMessage() { return errorMessage; }
 }
