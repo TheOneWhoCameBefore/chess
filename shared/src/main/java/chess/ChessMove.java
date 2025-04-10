@@ -57,7 +57,7 @@ public class ChessMove {
         return "" + (char) ('a' + startPosition.getColumn() - 1) + startPosition.getRow() + (char) ('a' + endPosition.getColumn() - 1) + endPosition.getRow();
     }
 
-    public ChessMove fromAlgebraicNotation(String notation) {
+    public static ChessMove fromAlgebraicNotation(String notation) {
         int startColumn = notation.charAt(0) - 'a' + 1;
         int startRow = Character.getNumericValue((notation.charAt(1)));
         ChessPosition startPosition = new ChessPosition(startRow, startColumn);
