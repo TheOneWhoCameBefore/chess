@@ -42,7 +42,12 @@ public class UserService {
 
     public LoginResponse login(LoginRequest loginRequest) throws ResponseException {
         try {
-            UserData user = userDAO.retrieveUser(loginRequest.getUsername());
+            UserData user;
+            try {
+                user = userDAO.retrieveUser(loginRequest.getUsername());
+            } catch (DataAccessException e) {
+                user = null;
+            }
             if (user == null || !BCrypt.checkpw(loginRequest.getPassword(), user.password())) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
@@ -55,7 +60,12 @@ public class UserService {
 
     public void logout(LogoutRequest logoutRequest) throws ResponseException {
         try {
-            AuthData auth = authDAO.retrieveAuth(logoutRequest.getAuthToken());
+            AuthData auth;
+            try {
+                auth = authDAO.retrieveAuth(logoutRequest.getAuthToken());
+            } catch (DataAccessException e) {
+                auth = null;
+            }
             if (auth == null) {
                 throw new ResponseException(401, "Error: unauthorized");
             }
