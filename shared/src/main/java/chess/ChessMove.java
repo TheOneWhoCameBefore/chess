@@ -53,7 +53,7 @@ public class ChessMove {
         return Objects.hash(getStartPosition(), getEndPosition(), getPromotionPiece());
     }
 
-    public String toAlgebraicNotation(ChessGame game) {
+    public String toAlgebraicNotation() {
         return "" + (char) ('a' + startPosition.getColumn() - 1) + startPosition.getRow() + (char) ('a' + endPosition.getColumn() - 1) + endPosition.getRow();
     }
 

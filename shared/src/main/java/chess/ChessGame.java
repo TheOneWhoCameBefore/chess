@@ -135,7 +135,7 @@ public class ChessGame {
                 setTeamTurn(TeamColor.WHITE);
             }
         } else {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("Invalid move.");
         }
     }
 
