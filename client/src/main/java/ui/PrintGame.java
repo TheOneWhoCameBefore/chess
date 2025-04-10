@@ -1,8 +1,13 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static chess.ChessGame.TeamColor.*;
 import static ui.EscapeSequences.*;
@@ -22,7 +27,7 @@ public class PrintGame {
         DARK
     }
 
-    public String printBoard(ChessGame.TeamColor perspective) {
+    public String printBoard(ChessGame.TeamColor perspective, ChessPosition highlightPosition) {
         StringBuilder stringBoard = new StringBuilder();
         String[] ranks = {FULL_8, FULL_7, FULL_6, FULL_5, FULL_4, FULL_3, FULL_2, FULL_1};
         String[] columns = {FULL_A, FULL_B, FULL_C, FULL_D, FULL_E, FULL_F, FULL_G, FULL_H};
@@ -30,12 +35,19 @@ public class PrintGame {
         int start = 8;
         int end = 1;
         int incrementBy = -1;
-        if (perspective == ChessGame.TeamColor.BLACK) {
+        if (perspective == BLACK) {
             start = 1;
             end = 8;
             incrementBy = 1;
             reverseArray(ranks);
             reverseArray(columns);
+        }
+
+        Collection<ChessPosition> highlightMovePositions = new ArrayList<>();
+        if (highlightPosition != null) {
+            for (ChessMove move : game.validMoves(highlightPosition)) {
+                highlightMovePositions.add(move.getEndPosition());
+            }
         }
 
         stringBoard.append(SET_TEXT_COLOR_BLACK).append(getNextGrey()).append(EMPTY);
@@ -47,8 +59,16 @@ public class PrintGame {
             String rankIndex = ranks[(incrementBy * row) - (incrementBy * start)];
             stringBoard.append(getNextGrey()).append(SET_TEXT_COLOR_BLACK).append(rankIndex);
             for (int col = end; (incrementBy * col) - (incrementBy * start) >= 0; col -= incrementBy) {
-                stringBoard.append(getNextBoardColor());
                 ChessPosition position = new ChessPosition(row, col);
+                String color;
+                if (position.equals(highlightPosition)) {
+                    color = getNextYellowColor();
+                } else if (highlightMovePositions.contains(position)) {
+                    color = getNextHighlightColor();
+                } else {
+                    color = getNextBoardColor();
+                }
+                stringBoard.append(color);
                 ChessPiece piece = game.getBoard().getPiece(position);
                 if (piece != null) {
                     stringBoard.append(getSymbol(piece));
@@ -101,6 +121,25 @@ public class PrintGame {
             currentShade = AlternatingShade.LIGHT;
             return SET_BG_COLOR_DARK_BROWN;
         }
+    }
+
+    private String getNextHighlightColor() {
+        if (currentShade == AlternatingShade.LIGHT) {
+            currentShade = AlternatingShade.DARK;
+            return SET_BG_COLOR_LIGHT_GREEN;
+        } else {
+            currentShade = AlternatingShade.LIGHT;
+            return SET_BG_COLOR_DARK_GREEN;
+        }
+    }
+
+    private String getNextYellowColor() {
+        if (currentShade == AlternatingShade.LIGHT) {
+            currentShade = AlternatingShade.DARK;
+        } else {
+            currentShade = AlternatingShade.LIGHT;
+        }
+        return SET_BG_COLOR_YELLOW;
     }
 
     public static void reverseArray(String[] array) {
