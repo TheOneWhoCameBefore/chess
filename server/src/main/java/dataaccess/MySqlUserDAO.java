@@ -32,7 +32,7 @@ public class MySqlUserDAO implements UserDAO {
         } catch (Exception e) {
             throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
         }
-        return null;
+        throw new DataAccessException(String.format("No user found for username %s", username));
     }
 
     @Override

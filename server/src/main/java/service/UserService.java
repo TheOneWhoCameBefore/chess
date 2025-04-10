@@ -19,7 +19,12 @@ public class UserService {
 
     public RegisterResponse register(RegisterRequest registerRequest) throws ResponseException {
         try {
-            UserData user = userDAO.retrieveUser(registerRequest.getUsername());
+            UserData user;
+            try {
+                user = userDAO.retrieveUser(registerRequest.getUsername());
+            } catch (DataAccessException e) {
+                user = null;
+            }
             if (user != null) {
                 throw new ResponseException(403, "Error: already taken");
             }
