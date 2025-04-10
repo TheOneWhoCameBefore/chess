@@ -20,7 +20,6 @@ public class ChessClient {
     public State state = State.SIGNEDOUT;
     private List<ListGameData> mostRecentGamesList;
     private String authToken;
-    private String role;
     private int gameId;
     private ChessGame game;
 
@@ -52,23 +51,24 @@ public class ChessClient {
                 case "reprint" -> reprintGame();
                 case "resign" -> resign();
                 case "quit" -> "quit";
-                default -> {
-                    if (state == State.INGAME) {
-                        if (cmd.length() == 2) {
-                            yield showMoves(cmd);
-                        } else if (cmd.length() == 4) {
-                            yield makeMove(cmd);
-                        } else {
-                            yield help();
-                        }
-                    } else {
-                        yield help();
-                    }
-                }
+                default -> defaultHandler(cmd);
             };
         } catch (ResponseException ex) {
             return ex.getMessage();
         }
+    }
+
+    private String defaultHandler(String cmd) throws ResponseException {
+        if (state != State.INGAME) {
+            return help();
+        }
+        if (cmd.length() == 2) {
+            return showMoves(cmd);
+        } else if (cmd.length() == 4) {
+            return makeMove(cmd);
+        }
+
+        throw new ResponseException(500, "Unknown command");
     }
 
     private String register(String... params) throws ResponseException {

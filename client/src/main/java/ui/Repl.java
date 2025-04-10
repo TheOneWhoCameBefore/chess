@@ -54,7 +54,8 @@ public class Repl {
     }
 
     public void loadGame(ChessGame game, String role) {
-        System.out.println("\n" + new PrintGame(game).printBoard(Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, null));
+        System.out.println("\n" + new PrintGame(game).printBoard(
+                Objects.equals(role, "black") ? ChessGame.TeamColor.BLACK : ChessGame.TeamColor.WHITE, null));
         printPrompt();
     }
 

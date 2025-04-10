@@ -54,7 +54,11 @@ public class ChessMove {
     }
 
     public String toAlgebraicNotation() {
-        return "" + (char) ('a' + startPosition.getColumn() - 1) + startPosition.getRow() + (char) ('a' + endPosition.getColumn() - 1) + endPosition.getRow();
+        return "" +
+                (char) ('a' + startPosition.getColumn() - 1) +
+                startPosition.getRow() +
+                (char) ('a' + endPosition.getColumn() - 1) +
+                endPosition.getRow();
     }
 
     public static ChessMove fromAlgebraicNotation(String notation) {
