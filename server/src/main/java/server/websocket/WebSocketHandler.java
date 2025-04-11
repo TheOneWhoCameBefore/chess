@@ -113,6 +113,7 @@ public class WebSocketHandler {
                 String.format("%s made move %s", username, makeMoveUserGameCommand.getMove().toAlgebraicNotation()));
         connections.broadcast(username, gameId, moveMessage);
 
+        String opponentUsername = game.game().getTeamTurn() == ChessGame.TeamColor.WHITE ? game.whiteUsername() : game.blackUsername();
         String endMessage = null;
         if (game.game().isInCheckmate(game.game().getTeamTurn())) { endMessage = "Checkmate!"; }
         if (game.game().isInStalemate(game.game().getTeamTurn())) { endMessage = "Stalemate!"; }
@@ -121,12 +122,12 @@ public class WebSocketHandler {
             game.game().setFinished();
             NotificationServerMessage checkMessage = new NotificationServerMessage(
                     ServerMessage.ServerMessageType.NOTIFICATION,
-                    endMessage);
+                    String.format("%s is in %s", opponentUsername, endMessage));
             connections.broadcast("", gameId, checkMessage);
         } else if (game.game().isInCheck(game.game().getTeamTurn())) {
             NotificationServerMessage checkMessage = new NotificationServerMessage(
                     ServerMessage.ServerMessageType.NOTIFICATION,
-                    "Check!");
+                    String.format("%s is in check!", opponentUsername));
             connections.broadcast("", gameId, checkMessage);
         }
 

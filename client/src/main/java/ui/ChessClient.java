@@ -172,6 +172,9 @@ public class ChessClient {
     }
 
     private String makeMove(String algebraicNotation) throws ResponseException {
+        if (!algebraicNotation.matches("^[a-zA-Z]\\d[a-zA-Z]\\d$")) {
+            throw new ResponseException(500, "Unknown move");
+        }
         ChessMove move = ChessMove.fromAlgebraicNotation(algebraicNotation);
         webSocketFacade.makeMove(authToken, gameId, move);
         return "Made move";
